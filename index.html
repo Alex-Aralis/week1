@@ -1,32 +1,67 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>...</title>
-    </head>
-    <body>
-    <h1>page title</h1>
-    <p class='nice'>page text</p>
-    <p id='para2'>page text</p>
-
+<!doctype html>
+<html class="no-js" lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>listing site</title>
+    <link rel="stylesheet" href="css/foundation.css">
+    <link rel="stylesheet" href="css/app.css">
+  </head>
+  <body>
     <section>
-        <div>
-            <form>
-                <label for="text1">Name</label>
-                <input type="text" name="text1" placeholder="e.g. Joe Shmo">
-                <button type="submit">Submit</button>
+        <div style="width:75%; margin:auto; background-color:lightgrey; padding:0 10px 0 10px">
+            <form id=person_form>
+                <p>
+                    <label for='name'>Name</label>
+                    <input type='text' name='name' required>
+                </p> <p>
+                    <label for='hair_color'>Hair Color</label>
+                    <input type='color' name='hair_color'>
+                </p> <p>
+                    <label for='age'>Age</label>
+                    <input type='number' name='age' required>
+                </p> <p>
+                    <label for='birthplace'>Birth Place</label>
+                    <input type='text' name='birthplace' required>
+                </p> <p>
+                    <a class='button' onclick='document.querySelector("#invisible_button").click()' >Submit</a>
+                    <button id='invisible_button' type='submit' style='display:none'></button>
+                </p>
             </form>
         </div>
-        <div class="details">
-            
+        <div class="details" style="width:75%; margin:auto; background-color:lightgrey; padding:0 10px 0 10px">
+            <dl id="details_list">
+            </dl> 
         </div>
     </section>
 
     <script>
-        document.querySelector('form').onsubmit = function(e) {
-            e.preventDefault();
-            document.querySelector('div.details').innerHTML = '<p>' + this.text1.value + '</p>';
+        function personSubmit(e) {
+            if (e != null ){
+                e.preventDefault();
+            }
+
+            console.log(this)
+            document.querySelector('#details_list').innerHTML += 
+                '<div style="border-width:2px 0 0 0; border-color:grey; border-style:dashed;"><il><dt>Name</dt><dd>' + 
+                this.name.value + '</dd></il>' +
+                '<il><dt>Hair Color</dt><dd style="color:'+this.hair_color.value+'; background-color:'+this.hair_color.value+'">' + this.hair_color.value + '</dd></il>' +
+                '<il><dt>Age</dt><dd>' + this.age.value + '</dd></il>' +
+                '<il><dt>Birth Place</dt><dd>' + this.birthplace.value + '</dd></il></div>';
+
+            this.name.value = '';
+            this.hair_color.value = '';
+            this.age.value = '';
+            this.birthplace.value = '';
         }
+
+        document.querySelector('#person_form').onsubmit = personSubmit
     </script>
-    </body>
+
+    <script src="js/vendor/jquery.js"></script>
+    <script src="js/vendor/what-input.js"></script>
+    <script src="js/vendor/foundation.js"></script>
+    <script src="js/app.js"></script>
+  </body>
 </html>
