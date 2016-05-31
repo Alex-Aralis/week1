@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="css/app.css">
   </head>
   <body>
+    <header style='background-color:lightblue; color:dimgrey; padding:0 0 0 10px'>
+    <h1>A Simple JavaScript&trade; Page</h1>
+    </header>
     <section>
         <div style="width:75%; margin:10px auto auto auto; background-color:lightgrey; padding:0 10px 0 10px">
             <form id=person_form>
@@ -25,14 +28,13 @@
                     <label for='birthplace'>Birth Place</label>
                     <input type='text' name='birthplace' placeholder='e.g. Saltlake City, UT' required>
                 </p> <p>
-                    <a class='button' onclick='document.querySelector("#invisible_button").click()' >Submit</a>
+                    <a id='normal_button' class='button' tabindex='0' onkeydown='document.querySelector("#invisible_button").click()' onclick='document.querySelector("#invisible_button").click()' >Submit</a>
                     <button id='invisible_button' type='submit' style='display:none'></button>
                 </p>
             </form>
         </div>
-        <div class="details" style="width:75%; margin:auto; background-color:lightgrey; padding:0 0 0 0">
-            <dl id="details_list" style="padding:0px 0px 0px 0px; box-sizing:border-box;">
-            </dl> 
+        <div class="details" style="width:75%; margin:auto; background-color:lightgrey;">
+            <dl id="details_list"></dl> 
         </div>
     </section>
 
@@ -43,9 +45,12 @@
             }
 
             document.querySelector('#details_list').innerHTML = 
-                '<div style="position:relative; padding: 10px; border-width:2px; border-color:grey; border-style:dashed solid dashed solid;"><il><dt>Name</dt><dd>' + 
+                '<div style="position:relative; padding: 10px; border-width:2px 0 '+
+                (document.querySelector('#details_list').innerHTML == '' ? '2px' : '0')+
+                ' 0; border-color:grey; border-style:dashed solid dashed solid;"><il><dt>Name</dt><dd>' + 
                 this.name.value + '</dd></il>' +
-                '<il><dt>Hair Color</dt><dd style="color:'+this.hair_color.value+'; background-color:'+this.hair_color.value+'">' + this.hair_color.value + '</dd></il>' +
+                '<il><dt>Hair Color</dt><dd style="color:'+this.hair_color.value+'; background-color:'+
+                this.hair_color.value+'">' + this.hair_color.value + '</dd></il>' +
                 '<il><dt>Age</dt><dd>' + this.age.value + '</dd></il>' +
                 '<il><dt>Birth Place</dt><dd>' + this.birthplace.value + '</dd></il></div>' +
                 document.querySelector('#details_list').innerHTML;
@@ -57,6 +62,12 @@
         }
 
         document.querySelector('#person_form').onsubmit = personSubmit;
+
+        document.querySelector('#normal_button').onkeydown = function(e){
+            if(e.keyCode === 13 || e.keyCode === 32){
+                document.querySelector("#invisible_button").click()             
+            }
+        }
     </script>
 
     <script src="js/vendor/jquery.js"></script>
