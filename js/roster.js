@@ -1,3 +1,4 @@
+
 RosterApp = {
     addEntry: function(input){
         var entry = document.createElement('div');
@@ -8,15 +9,15 @@ RosterApp = {
 
         delButton.className = 'alert button roster_button roster_delete_button';
         delButton.type = 'button';
-        delButton.innerText = 'Delete';
-        delButton.setAttribute('data-roster_count', this.count);
-        delButton.onclick = this.deleteEntry;
+        delButton.innerText = 'Drop';
+        delButton.setAttribute('data-roster_count', RosterApp.count);
+        delButton.onclick = RosterApp.deleteEntry;
     
         promoteButton.className = 'success button roster_button roster_promote_button';
         promoteButton.type = 'button';
         promoteButton.innerText = 'Promote';
-        promoteButton.setAttribute('data-roster_count', this.count);
-        promoteButton.onclick = this.promoteEntry;
+        promoteButton.setAttribute('data-roster_count', RosterApp.count);
+        promoteButton.onclick = RosterApp.promoteEntry;
 
         text.innerText = input;
 
@@ -29,19 +30,18 @@ RosterApp = {
         entry.appendChild(promoteButton);
         entry.appendChild(delButton);
 
-        this.roster.appendChild(entry);
-        entry.id = 'roster_entry_' + this.count;
-        this.count += 1;
+        RosterApp.roster.appendChild(entry);
+        entry.id = 'roster_entry_' + RosterApp.count;
+        RosterApp.count += 1;
 
         return entry;
-        this.inputField.onkeyup = this.maintainButton;
+        RosterApp.inputField.onkeyup = RosterApp.maintainButton;
     },
 
     deleteEntry: function(e){
         entry = document.getElementById('roster_entry_' + this.getAttribute("data-roster_count"));
         entry.parentNode.removeChild(entry);
     },
-
 
     promoteButton: function(button){
         RosterApp.addClasses(button, ['roster_promote_button', 'success']);
@@ -58,7 +58,6 @@ RosterApp = {
     },
 
     demoteEntry: function(e){
-        
         RosterApp.promoteButton(this)
 
         entry = document.getElementById('roster_entry_' + this.getAttribute("data-roster_count"));
@@ -73,43 +72,16 @@ RosterApp = {
     },
 
     resetHead: function(){
-        this.inputField.value = '';
+        RosterApp.inputField.value = '';
     },
 
-    roster_add: function() {
-        if(!this.hasClass(document.getElementById('roster_add_button'), 'disabled')){
-            this.addEntry(this.inputField.value);
-            this.resetHead();
+    rosterAdd: function() {
+        if(!document.getElementById('roster_add_button').classList.contains('disabled')){
+            RosterApp.addEntry(RosterApp.inputField.value);
+            RosterApp.resetHead();
         }
     },
     
-    hasClass(elem, cls){
-        return (' ' + elem.className + ' ').indexOf(cls) > -1;
-    },
-
-/*
-    removeClass: function(elem, cls){
-        var len = elem.length;
-        console.log(elem.className);
-        elem.className = elem.className.replace(' ' + cls + ' ', ' ');
-        elem.className = elem.className.replace(cls + ' ', ' ');
-        elem.className = elem.className.replace(' ' + cls, ' ');
-        console.log(elem.className);
-
-        if (len > elem.length){
-            return true;
-        }else{
-            return false;
-        }
-    },
-
-    addClass: function(elem, cls){
-        if (!RosterApp.hasClass(elem, cls)) {
-            elem.classList.add(cls);
-        }
-    },
-*/
-
     forEachCall: function(elem, items, call){
         items.forEach(function(item){
             call(item);
@@ -118,11 +90,6 @@ RosterApp = {
 
     addClasses: function(elem, classes){
         RosterApp.forEachCall(elem, classes, elem.classList.add.bind(elem.classList));
-        /*
-        classes.forEach(classes, function(cls){
-            elem.classList.add(elem)
-        })
-        */
     },
 
     removeClasses: function(elem, classes){
@@ -142,30 +109,30 @@ RosterApp = {
     },
 
     init: function() {
-        this.inputField = document.getElementById('roster_input');
-        this.roster = document.getElementById('roster_list');
-        this.addButton = document.getElementById('roster_add_button');
-        this.count = 0;
+        RosterApp.inputField = document.getElementById('roster_input');
+        RosterApp.roster = document.getElementById('roster_list');
+        RosterApp.addButton = document.getElementById('roster_add_button');
+        RosterApp.count = 0;
 
-        this.inputField.onkeyup = this.maintainButton;
-        this.inputField.onkeypress = this.maintainButton;
+        RosterApp.inputField.onkeyup = RosterApp.maintainButton;
+        RosterApp.inputField.onkeypress = RosterApp.maintainButton;
         
-        this.addButton.onclick = this.roster_add.bind(this);
+        RosterApp.addButton.onclick = RosterApp.rosterAdd;
 
-        this.addButton.onkeydown = function(e){
+        RosterApp.addButton.onkeydown = function(e){
             //on space or enter
             if (e.keyCode === 13 || e.keyCode === 32){
-                this.roster_add();
+                RosterApp.rosterAdd();
             }
-        }.bind(this)
+        }
 
-        this.inputField.onkeydown = function(e){
+        RosterApp.inputField.onkeydown = function(e){
             //on enter
             if (e.keyCode === 13){
-                this.roster_add();
+                RosterApp.rosterAdd();
             }
-        }.bind(this)
+        }
     }
 }
 
-RosterApp.init();
+document.onload = RosterApp.init();
