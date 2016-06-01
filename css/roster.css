@@ -3,7 +3,6 @@ div.flex_container{
 }
 
 div.roster_head{
-    margin: 0 0 0 0;
 }
 div.roster_main{
     padding:2rem;
@@ -11,12 +10,12 @@ div.roster_main{
 
 a.roster_button{
     flex: 0 0 6rem;
+    margin:0;
 }
 
 #roster_add_button{
     height:auto;
     font-size:small;
-    margin:0;
 }
 
 div.roster_entry{
@@ -30,15 +29,12 @@ div.roster_entry{
 }
 
 a.roster_delete_button{
-    margin:0;
 }
 
 a.roster_promote_button{
-    margin:0;
 }
 
 a.roster_demote_button{
-    margin:0;
 }
 div.roster_promoted{
     left:-2px;
