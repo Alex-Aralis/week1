@@ -1,0 +1,40 @@
+div.flex_container{
+    display:flex;
+}
+
+div.roster_head{
+    margin: 0 0 0 0;
+}
+div.roster_main{
+    padding:2rem;
+}
+
+a.roster_button{
+    width:6rem;
+}
+
+#roster_add_button{
+    height:auto;
+    font-size:small;
+    margin:0;
+}
+
+a.roster_delete_button{
+    margin:0;
+}
+
+#roster_input{
+    height:auto;
+    margin:0;
+}
+
+div.roster_list_item_text_container{
+    width:100%;
+    margin:0;
+    padding:0 0 0 0.5rem;
+    align-items: center;
+}
+
+div.roster_entry{
+    margin:0 0 0.5rem 0;
+}
