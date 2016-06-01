@@ -38,8 +38,26 @@ RosterApp = {
     },
 
     roster_add: function() {
-        this.addEntry(this.inputField.value);
-        this.resetHead();
+        if(!this.hasClass(document.getElementById('roster_add_button'), 'disabled')){
+            this.addEntry(this.inputField.value);
+            this.resetHead();
+        }
+    },
+    
+    hasClass(ele, cls){
+        return (' ' + ele.className + ' ').indexOf(cls) > -1;
+    },
+
+    maintainButton: function() {
+        var inputButton = document.getElementById('roster_add_button');
+        var isEmpty = /^\s*$/.test(this.value);
+        if (isEmpty && !RosterApp.hasClass(inputButton, 'disabled')){
+            inputButton.classList.add('disabled');            
+        }else if (!isEmpty){
+            inputButton.className = inputButton.className.replace(/\bdisabled\b/,'');
+        }
+
+        console.log(this)
     },
 
     init: function() {
@@ -48,6 +66,9 @@ RosterApp = {
         this.addButton = document.getElementById('roster_add_button');
         this.count = 0;
 
+        this.inputField.onkeyup = this.maintainButton;
+        this.inputField.onkeypress = this.maintainButton;
+        
         this.addButton.onclick = this.roster_add.bind(this);
 
         this.addButton.onkeydown = function(e){
