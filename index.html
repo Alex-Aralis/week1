@@ -10,8 +10,11 @@
 
 
     <style>
-        #detail_list:nth_child(1) {
-            background-color:red;
+        div.ticket:nth-child(even){
+            background-color:lightgreen;
+        }
+        div.ticket:nth-child(odd) {
+            background-color:lightblue;
         }
     </style>
   </head>
@@ -19,7 +22,7 @@
     <header style='background-color:lightblue; color:dimgrey; padding:0 0 0 10px'>
     <h1>A Simple JavaScript&trade; Page</h1>
     </header>
-    <section style='display:flex; align-items:flex-start'>
+    <section style='display:flex; align-items:flex-start;'>
         <div style="flex:1;  background-color:lightgrey; padding:0 10px 0 10px">
             <form id=person_form>
                 <p>
