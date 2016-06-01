@@ -3,6 +3,7 @@ RosterApp = {
         var entry = document.createElement('div');
         var textContainer = document.createElement('div');
         var delButton = document.createElement('a');
+        var promoteButton = document.createElement('a');
         var text = document.createElement('div');
 
         delButton.className = 'alert button roster_button roster_delete_button';
@@ -10,6 +11,12 @@ RosterApp = {
         delButton.innerText = 'Delete';
         delButton.setAttribute('data-roster_count', this.count);
         delButton.onclick = this.deleteEntry;
+    
+        promoteButton.className = 'success button roster_button roster_promote_button';
+        promoteButton.type = 'button';
+        promoteButton.innerText = 'Promote';
+        promoteButton.setAttribute('data-roster_count', this.count);
+        promoteButton.onclick = this.promoteEntry;
 
         text.innerText = input;
 
@@ -19,6 +26,7 @@ RosterApp = {
         entry.className = 'flex_container roster_entry';
         
         entry.appendChild(textContainer);
+        entry.appendChild(promoteButton);
         entry.appendChild(delButton);
 
         this.roster.appendChild(entry);
@@ -26,11 +34,42 @@ RosterApp = {
         this.count += 1;
 
         return entry;
+        this.inputField.onkeyup = this.maintainButton;
     },
 
     deleteEntry: function(e){
-        entry = document.getElementById('roster_entry_' + this.getAttribute("data-roster_count"))
+        entry = document.getElementById('roster_entry_' + this.getAttribute("data-roster_count"));
         entry.parentNode.removeChild(entry);
+    },
+
+
+    promoteButton: function(button){
+        RosterApp.addClasses(button, ['roster_promote_button', 'success']);
+        RosterApp.removeClasses(button, ['roster_demote_button', 'secondary']);
+        button.innerText = 'Promote';
+        button.onclick = RosterApp.promoteEntry;
+    },
+
+    demoteButton: function(button){
+        RosterApp.addClasses(button, ['roster_demote_button', 'secondary']);
+        RosterApp.removeClasses(button, ['roster_promote_button', 'success']);
+        button.innerText = 'Demote';
+        button.onclick = RosterApp.demoteEntry;
+    },
+
+    demoteEntry: function(e){
+        
+        RosterApp.promoteButton(this)
+
+        entry = document.getElementById('roster_entry_' + this.getAttribute("data-roster_count"));
+        entry.classList.remove('roster_promoted');
+    },
+
+    promoteEntry: function(e){
+        RosterApp.demoteButton(this)
+
+        entry = document.getElementById('roster_entry_' + this.getAttribute("data-roster_count"));
+        entry.classList.add('roster_promoted');
     },
 
     resetHead: function(){
@@ -44,20 +83,62 @@ RosterApp = {
         }
     },
     
-    hasClass(ele, cls){
-        return (' ' + ele.className + ' ').indexOf(cls) > -1;
+    hasClass(elem, cls){
+        return (' ' + elem.className + ' ').indexOf(cls) > -1;
     },
+
+/*
+    removeClass: function(elem, cls){
+        var len = elem.length;
+        console.log(elem.className);
+        elem.className = elem.className.replace(' ' + cls + ' ', ' ');
+        elem.className = elem.className.replace(cls + ' ', ' ');
+        elem.className = elem.className.replace(' ' + cls, ' ');
+        console.log(elem.className);
+
+        if (len > elem.length){
+            return true;
+        }else{
+            return false;
+        }
+    },
+
+    addClass: function(elem, cls){
+        if (!RosterApp.hasClass(elem, cls)) {
+            elem.classList.add(cls);
+        }
+    },
+*/
+
+    forEachCall: function(elem, items, call){
+        items.forEach(function(item){
+            call(item);
+        }, elem);
+    },
+
+    addClasses: function(elem, classes){
+        RosterApp.forEachCall(elem, classes, elem.classList.add.bind(elem.classList));
+        /*
+        classes.forEach(classes, function(cls){
+            elem.classList.add(elem)
+        })
+        */
+    },
+
+    removeClasses: function(elem, classes){
+        RosterApp.forEachCall(elem, classes, elem.classList.remove.bind(elem.classList));
+    },
+    
 
     maintainButton: function() {
         var inputButton = document.getElementById('roster_add_button');
         var isEmpty = /^\s*$/.test(this.value);
-        if (isEmpty && !RosterApp.hasClass(inputButton, 'disabled')){
-            inputButton.classList.add('disabled');            
-        }else if (!isEmpty){
-            inputButton.className = inputButton.className.replace(/\bdisabled\b/,'');
-        }
 
-        console.log(this)
+        if (isEmpty){
+            inputButton.classList.add('disabled');
+        }else{
+            inputButton.classList.remove('disabled');
+        }
     },
 
     init: function() {

@@ -10,7 +10,7 @@ div.roster_main{
 }
 
 a.roster_button{
-    width:6rem;
+    flex: 0 0 6rem;
 }
 
 #roster_add_button{
@@ -21,6 +21,21 @@ a.roster_button{
 
 a.roster_delete_button{
     margin:0;
+}
+
+a.roster_promote_button{
+    margin:0;
+}
+
+a.roster_demote_button{
+    margin:0;
+}
+div.roster_promoted{
+    position:relative;
+    left:-4;
+    top:-4;
+    box-shadow:4px 4px 2px grey;
+    
 }
 
 #roster_input{
