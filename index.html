@@ -7,13 +7,20 @@
     <title>listing site</title>
     <link rel="stylesheet" href="css/foundation.css">
     <link rel="stylesheet" href="css/app.css">
+
+
+    <style>
+        #detail_list:nth_child(1) {
+            background-color:red;
+        }
+    </style>
   </head>
   <body>
     <header style='background-color:lightblue; color:dimgrey; padding:0 0 0 10px'>
     <h1>A Simple JavaScript&trade; Page</h1>
     </header>
-    <section>
-        <div style="width:75%; margin:10px auto auto auto; background-color:lightgrey; padding:0 10px 0 10px">
+    <section style='display:flex; align-items:flex-start'>
+        <div style="flex:1;  background-color:lightgrey; padding:0 10px 0 10px">
             <form id=person_form>
                 <p>
                     <label for='name'>Name</label>
@@ -33,42 +40,12 @@
                 </p>
             </form>
         </div>
-        <div class="details" style="width:75%; margin:auto; background-color:lightgrey;">
-            <dl id="details_list"></dl> 
+        <div  class="details" style="flex:1; align-self: stretch;">
+            <dl id="details_list" style='margin:0 0 0 0;'></dl> 
         </div>
     </section>
 
-    <script>
-        function personSubmit(e) {
-            if (e != null ){
-                e.preventDefault();
-            }
-
-            document.querySelector('#details_list').innerHTML = 
-                '<div style="position:relative; padding: 10px; border-width:2px 0 '+
-                (document.querySelector('#details_list').innerHTML == '' ? '2px' : '0')+
-                ' 0; border-color:grey; border-style:dashed solid dashed solid;"><il><dt>Name</dt><dd>' + 
-                this.name.value + '</dd></il>' +
-                '<il><dt>Hair Color</dt><dd style="color:'+this.hair_color.value+'; background-color:'+
-                this.hair_color.value+'">' + this.hair_color.value + '</dd></il>' +
-                '<il><dt>Age</dt><dd>' + this.age.value + '</dd></il>' +
-                '<il><dt>Birth Place</dt><dd>' + this.birthplace.value + '</dd></il></div>' +
-                document.querySelector('#details_list').innerHTML;
-
-            this.name.value = '';
-            this.hair_color.value = '#000000';
-            this.age.value = '';
-            this.birthplace.value = '';
-        }
-
-        document.querySelector('#person_form').onsubmit = personSubmit;
-
-        document.querySelector('#normal_button').onkeydown = function(e){
-            if(e.keyCode === 13 || e.keyCode === 32){
-                document.querySelector("#invisible_button").click()             
-            }
-        }
-    </script>
+    <script src='js/main.js'></script>
 
     <script src="js/vendor/jquery.js"></script>
     <script src="js/vendor/what-input.js"></script>
