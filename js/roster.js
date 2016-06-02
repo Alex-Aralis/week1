@@ -36,12 +36,12 @@ RosterApp =
 
             entry.className = 'flex_container roster_entry';
 
+            entry.appendChild(deleteButton);
             entry.appendChild(textContainer);
-            entry.appendChild(upButton);
-            entry.appendChild(downButton);
             entry.appendChild(editButton);
             entry.appendChild(promoteButton);
-            entry.appendChild(deleteButton);
+            entry.appendChild(upButton);
+            entry.appendChild(downButton);
 
             _RosterApp.roster.appendChild(entry);
             entry.id = 'roster_entry_' + _RosterApp.count;
