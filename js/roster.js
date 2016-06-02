@@ -1,23 +1,38 @@
 
 RosterApp = {
+    init: function() {
+        RosterApp.inputField = document.getElementById('roster_input');
+        RosterApp.roster = document.getElementById('roster_list');
+        RosterApp.addButton = document.getElementById('roster_add_button');
+        RosterApp.count = 0;
+
+        RosterApp.inputField.onkeyup = RosterApp.maintainButton;
+        RosterApp.inputField.onkeypress = RosterApp.maintainButton;
+        
+        RosterApp.addButton.onclick = RosterApp.rosterAdd;
+
+        RosterApp.addButton.onkeydown = function(e){
+            //on space or enter
+            if (e.keyCode === 13 || e.keyCode === 32){
+                RosterApp.rosterAdd();
+            }
+        }
+
+        RosterApp.inputField.onkeydown = function(e){
+            //on enter
+            if (e.keyCode === 13){
+                RosterApp.rosterAdd();
+            }
+        }
+    },
+
     addEntry: function(input){
         var entry = document.createElement('div');
         var textContainer = document.createElement('div');
-        var delButton = document.createElement('a');
-        var promoteButton = document.createElement('a');
         var text = document.createElement('div');
 
-        delButton.className = 'alert button roster_button roster_delete_button';
-        delButton.type = 'button';
-        delButton.innerText = 'Drop';
-        delButton.setAttribute('data-roster_count', RosterApp.count);
-        delButton.onclick = RosterApp.deleteEntry;
-    
-        promoteButton.className = 'success button roster_button roster_promote_button';
-        promoteButton.type = 'button';
-        promoteButton.innerText = 'Promote';
-        promoteButton.setAttribute('data-roster_count', RosterApp.count);
-        promoteButton.onclick = RosterApp.promoteEntry;
+        var deleteButton = RosterApp.createButton('demote', RosterApp.count);
+        var promoteButton = RosterApp.createButton('promote', RosterApp.count);
 
         text.innerText = input;
 
@@ -28,14 +43,41 @@ RosterApp = {
         
         entry.appendChild(textContainer);
         entry.appendChild(promoteButton);
-        entry.appendChild(delButton);
+        entry.appendChild(deleteButton);
 
         RosterApp.roster.appendChild(entry);
         entry.id = 'roster_entry_' + RosterApp.count;
         RosterApp.count += 1;
 
         return entry;
-        RosterApp.inputField.onkeyup = RosterApp.maintainButton;
+    },
+
+    createButton: function(rosterButtonType, count){
+        var button = document.createElement('a');
+        var classes = 'button roster_button';
+        var innerText = 'DEFAULT';
+        var callback;
+
+        switch (rosterButtonType) {
+            case 'promote':
+                classes += ' success roster_promote_button';
+                innerText = 'Promote';
+                callback = RosterApp.promoteEntry;
+                break;
+            case 'demote':
+                classes += ' alert roster_delete_button';
+                innerText = 'Demote';
+                callback = RosterApp.deleteEntry;
+                break;
+        }
+        
+        button.type = 'button';
+        button.innerText = innerText;
+        button.className = classes;
+        button.setAttribute('data-roster_count', count);
+        button.onclick = callback;
+        
+        return button;
     },
 
     deleteEntry: function(e){
@@ -105,32 +147,6 @@ RosterApp = {
             inputButton.classList.add('disabled');
         }else{
             inputButton.classList.remove('disabled');
-        }
-    },
-
-    init: function() {
-        RosterApp.inputField = document.getElementById('roster_input');
-        RosterApp.roster = document.getElementById('roster_list');
-        RosterApp.addButton = document.getElementById('roster_add_button');
-        RosterApp.count = 0;
-
-        RosterApp.inputField.onkeyup = RosterApp.maintainButton;
-        RosterApp.inputField.onkeypress = RosterApp.maintainButton;
-        
-        RosterApp.addButton.onclick = RosterApp.rosterAdd;
-
-        RosterApp.addButton.onkeydown = function(e){
-            //on space or enter
-            if (e.keyCode === 13 || e.keyCode === 32){
-                RosterApp.rosterAdd();
-            }
-        }
-
-        RosterApp.inputField.onkeydown = function(e){
-            //on enter
-            if (e.keyCode === 13){
-                RosterApp.rosterAdd();
-            }
         }
     }
 }
