@@ -6,26 +6,31 @@ RosterApp =
             _RosterApp.inputField = document.getElementById('roster_input');
             _RosterApp.roster = document.getElementById('roster_list');
             _RosterApp.addButton = document.getElementById('roster_add_button');
+            _RosterApp.form = document.getElementById('roster_head');
             _RosterApp.count = 0;
 
             _RosterApp.inputField.onkeyup = _RosterApp.maintainButton;
             _RosterApp.inputField.onkeypress = _RosterApp.maintainButton;
+           
+            _RosterApp.form.onsubmit = _RosterApp.rosterAdd; 
+            //_RosterApp.addButton.onclick = _RosterApp.rosterAdd;
             
-            _RosterApp.addButton.onclick = _RosterApp.rosterAdd;
-
+            /*
             _RosterApp.addButton.onkeydown = function(e){
                 //on space or enter
                 if (e.keyCode === 13 || e.keyCode === 32){
-                    _RosterApp.rosterAdd();
+                    console.log('fosdfs');
+                    //_RosterApp.form.onsubmit(new Event('submit-enter'));
                 }
             }
 
             _RosterApp.inputField.onkeydown = function(e){
                 //on enter
                 if (e.keyCode === 13){
-                    _RosterApp.rosterAdd();
+                    //_RosterApp.rosterAdd(new Event('keydown'));
                 }
             }
+            */
         },
 
         addEntry: function(input){
@@ -130,10 +135,13 @@ RosterApp =
 
         resetHead: function(){
             _RosterApp.inputField.value = '';
+            console.log('skdfs');
             _RosterApp.maintainButton();
         },
 
-        rosterAdd: function() {
+        rosterAdd: function(e) {
+            e.preventDefault();
+
             if(!document.getElementById('roster_add_button').classList.contains('disabled')){
                 _RosterApp.addEntry(_RosterApp.inputField.value);
                 _RosterApp.resetHead();
@@ -156,7 +164,7 @@ RosterApp =
 
         maintainButton: function() {
             var inputButton = document.getElementById('roster_add_button');
-            var isEmpty = /^\s*$/.test(this.value);
+            var isEmpty = /^\s*$/.test(_RosterApp.inputField.value);
 
             if (isEmpty){
                 inputButton.classList.add('disabled');

@@ -1,4 +1,4 @@
-div.flex_container{
+.flex_container{
     display:flex;
 }
 
@@ -8,21 +8,23 @@ input#roster_input:focus{
 
 div.roster_head{
 }
+
 div.roster_main{
     padding:2rem;
 }
 
-a.roster_button{
+.roster_button{
     flex: 0 0 6rem;
     margin:0;
     -webkit-user-select: none;
 }
 
+
 #roster_add_button{
     height:auto;
-/*
-    font-size:small;
-*/
+    transition-property: opacity;
+    transition-duration: 0.2s;
+    
 }
 
 div.roster_entry{
