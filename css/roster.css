@@ -59,7 +59,7 @@ div.roster_list_item_text_container{
     padding:0 0 0 0.5rem;
     align-items: center;
     transition-property: background-color;
-    transition-duration: 0.15s;
+    transition-duration: 0.25s;
 }
 
 div.roster_list_item_text_container.roster_promoted{
