@@ -20,7 +20,9 @@ a.roster_button{
 
 #roster_add_button{
     height:auto;
+/*
     font-size:small;
+*/
 }
 
 div.roster_entry{
@@ -64,6 +66,6 @@ div.roster_list_item_text_container{
 }
 
 div.roster_list_item_text_container.roster_promoted{
-    background-color:tan;
+    background-color:gold;
 }
 

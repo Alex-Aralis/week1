@@ -33,7 +33,7 @@ RosterApp =
             var textContainer = document.createElement('div');
             var text = document.createElement('div');
 
-            var deleteButton = _RosterApp.createButton('demote', _RosterApp.count);
+            var deleteButton = _RosterApp.createButton('delete', _RosterApp.count);
             var promoteButton = _RosterApp.createButton('promote', _RosterApp.count);
 
             text.innerText = input;
@@ -61,16 +61,22 @@ RosterApp =
             var callback;
 
             switch (rosterButtonType) {
+                case 'delete':
+                    classes += ' alert roster_delete_button';
+                    innerText = 'Drop';
+                    callback = _RosterApp.deleteEntry;
+                    break;
                 case 'promote':
                     classes += ' success roster_promote_button';
                     innerText = 'Promote';
                     callback = _RosterApp.promoteEntry;
                     break;
                 case 'demote':
-                    classes += ' alert roster_delete_button';
+                    classes += ' secondary roster_delete_button';
                     innerText = 'Demote';
-                    callback = _RosterApp.deleteEntry;
+                    callback = _RosterApp.demoteEntry;
                     break;
+                
             }
             
             button.type = 'button';
