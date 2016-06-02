@@ -156,6 +156,7 @@ RosterApp =
 
             _RosterApp.saveButton(e.currentTarget);
 
+            entry.field.select();
         },
             
         demoteEntry: function(e){
