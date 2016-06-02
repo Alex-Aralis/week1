@@ -1,4 +1,3 @@
-
 RosterApp = {
     init: function() {
         RosterApp.inputField = document.getElementById('roster_input');
@@ -40,7 +39,7 @@ RosterApp = {
         textContainer.appendChild(text);
 
         entry.className = 'flex_container roster_entry';
-        
+
         entry.appendChild(textContainer);
         entry.appendChild(promoteButton);
         entry.appendChild(deleteButton);
@@ -103,6 +102,8 @@ RosterApp = {
         RosterApp.promoteButton(this)
 
         entry = document.getElementById('roster_entry_' + this.getAttribute("data-roster_count"));
+        textContainer = entry.querySelector('div.roster_list_item_text_container');
+        textContainer.classList.remove('roster_promoted'); 
         entry.classList.remove('roster_promoted');
     },
 
@@ -110,11 +111,14 @@ RosterApp = {
         RosterApp.demoteButton(this)
 
         entry = document.getElementById('roster_entry_' + this.getAttribute("data-roster_count"));
+        textContainer = entry.querySelector('div.roster_list_item_text_container');
         entry.classList.add('roster_promoted');
+        textContainer.classList.add('roster_promoted');
     },
 
     resetHead: function(){
         RosterApp.inputField.value = '';
+        RosterApp.maintainButton();
     },
 
     rosterAdd: function() {
@@ -137,7 +141,6 @@ RosterApp = {
     removeClasses: function(elem, classes){
         RosterApp.forEachCall(elem, classes, elem.classList.remove.bind(elem.classList));
     },
-    
 
     maintainButton: function() {
         var inputButton = document.getElementById('roster_add_button');
@@ -148,7 +151,7 @@ RosterApp = {
         }else{
             inputButton.classList.remove('disabled');
         }
-    }
+    },
 }
 
 document.onload = RosterApp.init();

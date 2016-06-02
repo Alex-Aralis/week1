@@ -30,7 +30,7 @@ div.roster_entry{
     margin:0 0 0.5rem 0;
     box-shadow:0 0 -1px black;
     transition-property: left, top, box-shadow;
-    transition-duration: 0.25s;
+    transition-duration: 0.15s;
 }
 
 a.roster_delete_button{
@@ -41,11 +41,10 @@ a.roster_promote_button{
 
 a.roster_demote_button{
 }
-div.roster_promoted{
+div.roster_entry.roster_promoted{
     left:-2px;
     top:-2px;
     box-shadow:2px 2px 2px grey;
-    
 }
 
 #roster_input{
@@ -54,8 +53,16 @@ div.roster_promoted{
 }
 
 div.roster_list_item_text_container{
+    overflow: hidden;
     width:100%;
     margin:0;
     padding:0 0 0 0.5rem;
     align-items: center;
+    transition-property: background-color;
+    transition-duration: 0.15s;
 }
+
+div.roster_list_item_text_container.roster_promoted{
+    background-color:lightyellow;
+}
+
