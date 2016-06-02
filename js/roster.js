@@ -24,6 +24,8 @@ RosterApp =
             var deleteButton = _RosterApp.createButton('delete', _RosterApp.count);
             var promoteButton = _RosterApp.createButton('promote', _RosterApp.count);
             var editButton = _RosterApp.createButton('edit', _RosterApp.count);
+            var upButton = _RosterApp.createButton('up', _RosterApp.count);
+            var downButton = _RosterApp.createButton('down', _RosterApp.count);
 
             textContainer.className = 
                 'roster_input roster_list_item_text_container primary flex_container';
@@ -35,6 +37,8 @@ RosterApp =
             entry.className = 'flex_container roster_entry';
 
             entry.appendChild(textContainer);
+            entry.appendChild(upButton);
+            entry.appendChild(downButton);
             entry.appendChild(editButton);
             entry.appendChild(promoteButton);
             entry.appendChild(deleteButton);
@@ -73,6 +77,16 @@ RosterApp =
                     innerText = 'Edit';
                     callback = _RosterApp.editEntry;
                     break;
+                case 'up':
+                    classes += ' roster_up_button';
+                    innerText = '▲';
+                    callback = _RosterApp.upEntry;
+                    break;
+                case 'down':
+                    classes += ' roster_down_button';
+                    innerText = '▼';
+                    callback = _RosterApp.downEntry;
+                    break;
             }
             
             button.type = 'button';
@@ -91,6 +105,22 @@ RosterApp =
             entry.field = entry.querySelector('.roster_list_item_text_container');
 
             return entry;
+        },
+
+        upEntry: function(e){
+            var entry = _RosterApp.getEntry(e.currentTarget); 
+    
+            if(entry.previousElementSibling !== null){
+                entry.parentElement.insertBefore(entry, entry.previousElementSibling);
+            }
+        },
+
+        downEntry: function(e){
+            var entry = _RosterApp.getEntry(e.currentTarget); 
+    
+            if(entry.nextElementSibling !== null){
+                entry.parentElement.insertBefore(entry, entry.nextElementSibling.nextElementSibling);
+            }
         },
 
         editButton: function(button){
@@ -162,8 +192,8 @@ RosterApp =
         demoteEntry: function(e){
             var entry = _RosterApp.getEntry(this); 
             
-            _RosterApp.removeElement(entry);
-            _RosterApp.prependChild(_RosterApp.roster, entry);
+            //_RosterApp.removeElement(entry);
+            //_RosterApp.prependChild(_RosterApp.roster, entry);
             
             _RosterApp.promoteButton(this)
 
@@ -176,8 +206,9 @@ RosterApp =
         promoteEntry: function(e){
             var entry = _RosterApp.getEntry(this); 
 
-            _RosterApp.removeElement(entry);
-            _RosterApp.prependChild(_RosterApp.promotedRoster, entry);
+            
+            //_RosterApp.removeElement(entry);
+            //_RosterApp.prependChild(_RosterApp.promotedRoster, entry);
 
             _RosterApp.demoteButton(this)
             

@@ -12,6 +12,8 @@ input.roster_input[disabled]{
     cursor:default;
 }
 
+
+
 input.roster_list_item_text_container:not([disabled]){
     background-color:lightcyan;
 }
@@ -37,7 +39,7 @@ div.roster_main{
 }
 
 .roster_button{
-    flex: 0 0 6rem;
+    flex: 0 0 4rem;
     margin:0;
     -webkit-user-select: none;
 }
@@ -64,9 +66,11 @@ a.roster_delete_button{
 }
 
 a.roster_promote_button{
+    flex:0 0 7em;
 }
 
 a.roster_demote_button{
+    flex:0 0 7em;
 }
 
 a.roster_save_button{
@@ -83,6 +87,11 @@ a.roster_edit_button{
 
 a.roster_edit_button:hover{
     background-color:purple;
+}
+
+a.roster_up_button, a.roster_down_button{
+    flex:0 0 1rem;
+    padding: 0.85em 0.2em;
 }
 
 div.roster_entry.roster_promoted{
