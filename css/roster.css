@@ -2,6 +2,13 @@ div.flex_container{
     display:flex;
 }
 
+input#roster_input:focus{
+/*
+    border-width:1px;
+*/
+    box-shadow:0 0 0 transparent;
+}
+
 div.roster_head{
 }
 div.roster_main{
