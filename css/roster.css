@@ -1,4 +1,6 @@
 
+
+
 input.roster_list_item_text_container[disabled]{
     background-color:LightGrey;
 }
@@ -11,8 +13,6 @@ input.roster_input[disabled]{
     border:0;
     cursor:default;
 }
-
-
 
 input.roster_list_item_text_container:not([disabled]){
     background-color:lightcyan;
@@ -117,3 +117,8 @@ input.roster_list_item_text_container{
 }
 
 
+div.roster_list div.roster_entry:first-child a.roster_up_button, 
+div.roster_list div.roster_entry:last-child a.roster_down_button {
+    background:grey;
+    cursor:default;
+}

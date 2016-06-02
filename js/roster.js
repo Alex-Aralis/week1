@@ -172,20 +172,26 @@ RosterApp =
         },
 
         saveEntry: function(e){
-            var entry = _RosterApp.getEntry(this); 
+            var entry = _RosterApp.getEntry(e.currentTarget); 
 
+            entry.field.onkeypress = null;
             entry.field.setAttributeNode(document.createAttribute("disabled"));
 
             _RosterApp.editButton(e.currentTarget);
         },
 
         editEntry: function(e){
-            var entry = _RosterApp.getEntry(this); 
+            var entry = _RosterApp.getEntry(e.currentTarget); 
+
 
             entry.field.removeAttribute("disabled");
-
+            entry.field.onkeypress = function(e){
+                if (e.keyCode == 13) {
+                    entry.querySelector('.roster_save_button').click();
+                }
+            };
             _RosterApp.saveButton(e.currentTarget);
-
+            
             entry.field.select();
         },
             
