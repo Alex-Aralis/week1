@@ -1,9 +1,32 @@
+
+input.roster_list_item_text_container[disabled]{
+    background-color:LightGrey;
+}
+
+input.roster_list_item_text_container.roster_promoted{
+    background-color:gold;
+}
+
+input.roster_input[disabled]{
+    border:0;
+    cursor:default;
+}
+
+input.roster_list_item_text_container:not([disabled]){
+    background-color:lightcyan;
+}
+
+
 .flex_container{
     display:flex;
 }
 
-input#roster_input:focus{
+input.roster_input:focus{
     box-shadow:0 0 0 transparent;
+}
+
+input.roster_input.roster_list_item_text_container:focus{
+    border:0;
 }
 
 div.roster_head{
@@ -45,29 +68,43 @@ a.roster_promote_button{
 
 a.roster_demote_button{
 }
+
+a.roster_save_button{
+    background-color:goldenrod;
+}
+
+a.roster_save_button:hover{
+    background-color:darkgoldenrod;
+}
+
+a.roster_edit_button{
+    background-color:BlueViolet;
+}
+
+a.roster_edit_button:hover{
+    background-color:purple;
+}
+
 div.roster_entry.roster_promoted{
     left:-2px;
     top:-2px;
     box-shadow:2px 2px 2px grey;
 }
 
-#roster_input{
+.roster_input{
     height:auto;
     margin:0;
 }
 
-div.roster_list_item_text_container{
+input.roster_list_item_text_container{
     overflow: hidden;
     width:100%;
     margin:0;
-    padding:0 0 0 0.5rem;
     align-items: center;
     transition-property: background-color;
     transition-duration: 0.25s;
     border-width:0;
+    box-shadow:none;
 }
 
-div.roster_list_item_text_container.roster_promoted{
-    background-color:gold;
-}
 

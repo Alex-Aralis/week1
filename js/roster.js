@@ -5,6 +5,7 @@ RosterApp =
         init: function() {
             _RosterApp.inputField = document.getElementById('roster_input');
             _RosterApp.roster = document.getElementById('roster_list');
+            _RosterApp.promotedRoster = document.getElementById('roster_promoted_list');
             _RosterApp.addButton = document.getElementById('roster_add_button');
             _RosterApp.form = document.getElementById('roster_head');
             _RosterApp.count = 0;
@@ -13,42 +14,28 @@ RosterApp =
             _RosterApp.inputField.onkeypress = _RosterApp.maintainButton;
            
             _RosterApp.form.onsubmit = _RosterApp.rosterAdd; 
-            //_RosterApp.addButton.onclick = _RosterApp.rosterAdd;
-            
-            /*
-            _RosterApp.addButton.onkeydown = function(e){
-                //on space or enter
-                if (e.keyCode === 13 || e.keyCode === 32){
-                    console.log('fosdfs');
-                    //_RosterApp.form.onsubmit(new Event('submit-enter'));
-                }
-            }
-
-            _RosterApp.inputField.onkeydown = function(e){
-                //on enter
-                if (e.keyCode === 13){
-                    //_RosterApp.rosterAdd(new Event('keydown'));
-                }
-            }
-            */
         },
 
         addEntry: function(input){
             var entry = document.createElement('div');
-            var textContainer = document.createElement('div');
-            var text = document.createElement('div');
+            var textContainer = document.createElement('input');
+            //var text = document.createElement('div');
 
             var deleteButton = _RosterApp.createButton('delete', _RosterApp.count);
             var promoteButton = _RosterApp.createButton('promote', _RosterApp.count);
+            var editButton = _RosterApp.createButton('edit', _RosterApp.count);
 
-            text.innerText = input;
+            textContainer.className = 
+                'roster_input roster_list_item_text_container primary flex_container';
+            textContainer.setAttributeNode(document.createAttribute("disabled"));
+            textContainer.type = 'text';
 
-            textContainer.className = 'roster_list_item_text_container callout primary flex_container';
-            textContainer.appendChild(text);
+            textContainer.value = input;
 
             entry.className = 'flex_container roster_entry';
 
             entry.appendChild(textContainer);
+            entry.appendChild(editButton);
             entry.appendChild(promoteButton);
             entry.appendChild(deleteButton);
 
@@ -81,7 +68,11 @@ RosterApp =
                     innerText = 'Demote';
                     callback = _RosterApp.demoteEntry;
                     break;
-                
+                case 'edit':
+                    classes += ' roster_edit_button';
+                    innerText = 'Edit';
+                    callback = _RosterApp.editEntry;
+                    break;
             }
             
             button.type = 'button';
@@ -93,10 +84,35 @@ RosterApp =
             return button;
         },
 
-        deleteEntry: function(e){
+        getEntry: function(button){
             var entry = document.getElementById('roster_entry_' + 
-                this.getAttribute("data-roster_count"));
-            entry.parentNode.removeChild(entry);
+                button.getAttribute("data-roster_count"));
+            
+            entry.field = entry.querySelector('.roster_list_item_text_container');
+
+            return entry;
+        },
+
+        editButton: function(button){
+            button.classList.add('roster_edit_button');
+            button.classList.remove('roster_save_button');
+
+            button.innerText = 'Edit';
+
+            button.onclick = _RosterApp.editEntry;
+        },
+
+        saveButton: function(button){
+            button.classList.add('roster_save_button');
+            button.classList.remove('roster_edit_button');
+
+            button.innerText = 'Save';
+
+            button.onclick = _RosterApp.saveEntry;
+        },
+
+        deleteEntry: function(e){
+            _RosterApp.removeElement(_RosterApp.getEntry(e.currentTarget));
         },
 
         promoteButton: function(button){
@@ -112,30 +128,65 @@ RosterApp =
             button.innerText = 'Demote';
             button.onclick = _RosterApp.demoteEntry;
         },
+            
+        removeElement: function(elem){
+            elem.parentElement.removeChild(elem);
+             
+            return elem;
+        },
 
+        prependChild: function(par, chld){
+            par.insertBefore(chld, par.firstChild);
+            
+            return chld;
+        },
+
+        saveEntry: function(e){
+            var entry = _RosterApp.getEntry(this); 
+
+            entry.field.setAttributeNode(document.createAttribute("disabled"));
+
+            _RosterApp.editButton(e.currentTarget);
+        },
+
+        editEntry: function(e){
+            var entry = _RosterApp.getEntry(this); 
+
+            entry.field.removeAttribute("disabled");
+
+            _RosterApp.saveButton(e.currentTarget);
+
+        },
+            
         demoteEntry: function(e){
+            var entry = _RosterApp.getEntry(this); 
+            
+            _RosterApp.removeElement(entry);
+            _RosterApp.prependChild(_RosterApp.roster, entry);
+            
             _RosterApp.promoteButton(this)
 
-            var entry = document.getElementById('roster_entry_' + 
-                this.getAttribute("data-roster_count"));
-            var textContainer = entry.querySelector('div.roster_list_item_text_container');
+            var textContainer = entry.querySelector('input.roster_list_item_text_container');
 
             textContainer.classList.remove('roster_promoted'); 
             entry.classList.remove('roster_promoted');
         },
 
         promoteEntry: function(e){
-            _RosterApp.demoteButton(this)
+            var entry = _RosterApp.getEntry(this); 
 
-            var entry = document.getElementById('roster_entry_' + this.getAttribute("data-roster_count"));
-            var textContainer = entry.querySelector('div.roster_list_item_text_container');
+            _RosterApp.removeElement(entry);
+            _RosterApp.prependChild(_RosterApp.promotedRoster, entry);
+
+            _RosterApp.demoteButton(this)
+            
+            var textContainer = entry.querySelector('input.roster_list_item_text_container');
             entry.classList.add('roster_promoted');
             textContainer.classList.add('roster_promoted');
         },
 
         resetHead: function(){
             _RosterApp.inputField.value = '';
-            console.log('skdfs');
             _RosterApp.maintainButton();
         },
 
