@@ -60,9 +60,10 @@ div.roster_list_item_text_container{
     align-items: center;
     transition-property: background-color;
     transition-duration: 0.25s;
+    border-width:0;
 }
 
 div.roster_list_item_text_container.roster_promoted{
-    background-color:lightyellow;
+    background-color:tan;
 }
 

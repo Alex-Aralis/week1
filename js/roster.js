@@ -83,7 +83,8 @@ RosterApp =
         },
 
         deleteEntry: function(e){
-            entry = document.getElementById('roster_entry_' + this.getAttribute("data-roster_count"));
+            var entry = document.getElementById('roster_entry_' + 
+                this.getAttribute("data-roster_count"));
             entry.parentNode.removeChild(entry);
         },
 
@@ -104,8 +105,10 @@ RosterApp =
         demoteEntry: function(e){
             _RosterApp.promoteButton(this)
 
-            entry = document.getElementById('roster_entry_' + this.getAttribute("data-roster_count"));
-            textContainer = entry.querySelector('div.roster_list_item_text_container');
+            var entry = document.getElementById('roster_entry_' + 
+                this.getAttribute("data-roster_count"));
+            var textContainer = entry.querySelector('div.roster_list_item_text_container');
+
             textContainer.classList.remove('roster_promoted'); 
             entry.classList.remove('roster_promoted');
         },
@@ -113,8 +116,8 @@ RosterApp =
         promoteEntry: function(e){
             _RosterApp.demoteButton(this)
 
-            entry = document.getElementById('roster_entry_' + this.getAttribute("data-roster_count"));
-            textContainer = entry.querySelector('div.roster_list_item_text_container');
+            var entry = document.getElementById('roster_entry_' + this.getAttribute("data-roster_count"));
+            var textContainer = entry.querySelector('div.roster_list_item_text_container');
             entry.classList.add('roster_promoted');
             textContainer.classList.add('roster_promoted');
         },
