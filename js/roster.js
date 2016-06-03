@@ -36,8 +36,8 @@ RosterApp =
 
             entry.className = 'flex_container roster_entry';
 
-            entry.appendChild(deleteButton);
             entry.appendChild(textContainer);
+            entry.appendChild(deleteButton);
             entry.appendChild(editButton);
             entry.appendChild(promoteButton);
             entry.appendChild(upButton);
@@ -99,8 +99,14 @@ RosterApp =
         },
 
         getEntry: function(button){
-            var entry = document.getElementById('roster_entry_' + 
-                button.getAttribute("data-roster_count"));
+            var entry;
+
+            if(typeof button === 'number'){
+                entry = document.getElementById('roster_entry_' + button);               
+            }else{
+                var entry = document.getElementById('roster_entry_' + 
+                    button.getAttribute("data-roster_count"));
+            }
             
             entry.field = entry.querySelector('.roster_list_item_text_container');
 
@@ -177,21 +183,51 @@ RosterApp =
             entry.field.onkeypress = null;
             entry.field.setAttributeNode(document.createAttribute("disabled"));
 
+            entry.field.removeAttribute('data-roster_backup_value');
+
             _RosterApp.editButton(e.currentTarget);
+        },
+
+        restoreEntry: function(count){
+            var entry = _RosterApp.getEntry(count); 
+
+            entry.field.onkeypress = null;
+            entry.field.setAttributeNode(document.createAttribute("disabled"));
+            entry.field.value = entry.field.getAttribute('data-roster_backup_value');
+            entry.field.removeAttribute('data-roster_backup_value');
+
+            entry.field.onkeypress = null;
+
+            _RosterApp.editButton(entry.querySelector('.roster_save_button'));
+        },
+
+        getCount: function(elem){
+            return parseInt(elem.getAttribute('data-roster_count'));
         },
 
         editEntry: function(e){
             var entry = _RosterApp.getEntry(e.currentTarget); 
+            var count = _RosterApp.getCount(e.currentTarget);
 
+            entry.field.setAttribute('data-roster_backup_value', entry.field.value);
 
             entry.field.removeAttribute("disabled");
+            
+            entry.field.onkeydown = function(e){
+                //on escape
+                if (e.keyCode === 27){
+                    _RosterApp.restoreEntry(count);
+                }
+            };
+
             entry.field.onkeypress = function(e){
-                if (e.keyCode == 13) {
+                //on enter
+                if (e.keyCode === 13) {
                     entry.querySelector('.roster_save_button').click();
                 }
             };
             _RosterApp.saveButton(e.currentTarget);
-            
+                        
             entry.field.select();
         },
             

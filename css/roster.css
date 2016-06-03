@@ -85,6 +85,10 @@ a.roster_edit_button{
     background-color:BlueViolet;
 }
 
+a.roster_edit_button, a.roster_save_button{
+    flex: 0 0 5em;
+}
+
 a.roster_edit_button:hover{
     background-color:purple;
 }
