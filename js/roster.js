@@ -31,7 +31,7 @@ RosterApp =
             var upButton = R.createButton('up', R.count);
             var downButton = R.createButton('down', R.count);
 
-            var field = R.createField(input);
+            var field = R.createField(input, R.count);
             
             var entry = R.createEntry(field, R.count, 
                 [deleteButton, editButton, promoteButton, upButton, downButton]);
@@ -41,7 +41,7 @@ RosterApp =
             return entry;
         },
 
-        createField: function(input){
+        createField: function(input, count){
             var field = document.createElement('input');
 
             field.className = 
@@ -50,6 +50,7 @@ RosterApp =
             field.type = 'text';
 
             field.value = input;
+            field.dataset.rosterCount = count;
 
             return field;
         },
@@ -131,8 +132,14 @@ RosterApp =
             R.demoteEntry(R.getCount(ev.currentTarget));
         },
 
-        saveEntryHandler: function(ev){
+        saveEntryClickHandler: function(ev){
             R.saveEntry(R.getCount(ev.currentTarget));
+        },
+
+        saveEntryKeypressHandler: function(ev){
+            if(ev.keyCode === 13){
+                R.saveEntry(R.getCount(ev.currentTarget));
+            }
         },
 
         editEntryHandler: function(ev){
@@ -146,6 +153,14 @@ RosterApp =
         downEntryHandler: function(ev){
             R.downEntry(R.getCount(ev.currentTarget));
         },
+
+        restoreEntryKeydownHandler: function(ev){
+                //on escape
+                if (ev.keyCode === 27){
+                    R.restoreEntry(R.getCount(ev.currentTarget));
+                }
+        },
+
         getEntry: function(button){
             var entry;
 
@@ -191,7 +206,7 @@ RosterApp =
 
             button.innerText = 'Save';
 
-            button.onclick = R.saveEntryHandler;
+            button.onclick = R.saveEntryClickHandler;
         },
 
         deleteEntry: function(count){
@@ -252,9 +267,6 @@ RosterApp =
             return parseInt(elem.dataset.rosterCount);
         },
 
-        restoreEntryHandler: function(ev){
-                
-        },
 
         editEntry: function(count){
             var entry = R.getEntry(count); 
@@ -263,21 +275,11 @@ RosterApp =
 
             entry.field.removeAttribute("disabled");
             
-            entry.field.onkeydown = function(e){
-                //on escape
-                if (e.keyCode === 27){
-                    R.restoreEntry(count);
-                }
-            };
+            entry.field.onkeydown = R.restoreEntryKeydownHandler; 
+            entry.field.onkeypress = R.saveEntryKeypressHandler;
 
-            entry.field.onkeypress = function(e){
-                //on enter
-                if (e.keyCode === 13) {
-                    entry.querySelector('.roster_save_button').click();
-                }
-            };
-            R.saveButton(entry.querySelector('.roster_edit_button'));
-                        
+            R.saveButton(R.getButton(entry, 'edit'));                        
+
             entry.field.select();
         },
             
