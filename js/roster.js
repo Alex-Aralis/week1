@@ -1,51 +1,72 @@
 RosterApp = 
 
 (function() {
-    var _RosterApp = {
+    var R = {
         init: function() {
-            _RosterApp.inputField = document.getElementById('roster_input');
-            _RosterApp.roster = document.getElementById('roster_list');
-            _RosterApp.promotedRoster = document.getElementById('roster_promoted_list');
-            _RosterApp.addButton = document.getElementById('roster_add_button');
-            _RosterApp.form = document.getElementById('roster_head');
-            _RosterApp.count = 0;
+            R.inputField = R.id('roster_input');
+            R.roster = R.id('roster_list');
+            R.promotedRoster = R.id('roster_promoted_list');
+            R.addButton = R.id('roster_add_button');
+            R.form = R.id('roster_head');
+            R.count = 0;
 
-            _RosterApp.inputField.onkeyup = _RosterApp.maintainButton;
-            _RosterApp.inputField.onkeypress = _RosterApp.maintainButton;
+            R.inputField.onkeyup = R.maintainButton;
+            R.inputField.onkeypress = R.maintainButton;
            
-            _RosterApp.form.onsubmit = _RosterApp.rosterAdd; 
+            R.form.onsubmit = R.rosterAdd; 
         },
+        
+        id: document.getElementById.bind(document),
+
+        /*
+        selector: function(elem, selector){
+            return elem.querySelector(selector);
+        },
+        */
 
         addEntry: function(input){
-            var entry = document.createElement('div');
-            var textContainer = document.createElement('input');
-            //var text = document.createElement('div');
+            var deleteButton = R.createButton('delete', R.count);
+            var promoteButton = R.createButton('promote', R.count);
+            var editButton = R.createButton('edit', R.count);
+            var upButton = R.createButton('up', R.count);
+            var downButton = R.createButton('down', R.count);
 
-            var deleteButton = _RosterApp.createButton('delete', _RosterApp.count);
-            var promoteButton = _RosterApp.createButton('promote', _RosterApp.count);
-            var editButton = _RosterApp.createButton('edit', _RosterApp.count);
-            var upButton = _RosterApp.createButton('up', _RosterApp.count);
-            var downButton = _RosterApp.createButton('down', _RosterApp.count);
+            var field = R.createField(input);
+            
+            var entry = R.createEntry(field, R.count, 
+                [deleteButton, editButton, promoteButton, upButton, downButton]);
+            R.count += 1;
 
-            textContainer.className = 
+            R.roster.appendChild(entry);
+            return entry;
+        },
+
+        createField: function(input){
+            var field = document.createElement('input');
+
+            field.className = 
                 'roster_input roster_list_item_text_container primary flex_container';
-            textContainer.setAttributeNode(document.createAttribute("disabled"));
-            textContainer.type = 'text';
+            field.setAttributeNode(document.createAttribute("disabled"));
+            field.type = 'text';
 
-            textContainer.value = input;
+            field.value = input;
+
+            return field;
+        },
+
+        createEntry: function(field, count, buttons){
+            var entry = document.createElement('div');
 
             entry.className = 'flex_container roster_entry';
+            entry.dataset.rosterCount = count;
 
-            entry.appendChild(textContainer);
-            entry.appendChild(deleteButton);
-            entry.appendChild(editButton);
-            entry.appendChild(promoteButton);
-            entry.appendChild(upButton);
-            entry.appendChild(downButton);
+            entry.appendChild(field);
 
-            _RosterApp.roster.appendChild(entry);
-            entry.id = 'roster_entry_' + _RosterApp.count;
-            _RosterApp.count += 1;
+            buttons.forEach(function(button){
+                entry.appendChild(button);                
+            });
+
+            entry.id = 'roster_entry_' + count;
 
             return entry;
         },
@@ -60,52 +81,78 @@ RosterApp =
                 case 'delete':
                     classes += ' alert roster_delete_button';
                     innerText = 'Drop';
-                    callback = _RosterApp.deleteEntry;
+                    callback = R.deleteEntryHandler;
                     break;
                 case 'promote':
                     classes += ' success roster_promote_button';
                     innerText = 'Promote';
-                    callback = _RosterApp.promoteEntry;
+                    callback = R.promoteEntryHandler;
                     break;
                 case 'demote':
                     classes += ' secondary roster_delete_button';
                     innerText = 'Demote';
-                    callback = _RosterApp.demoteEntry;
+                    callback = R.demoteEntryHandler;
                     break;
                 case 'edit':
                     classes += ' roster_edit_button';
                     innerText = 'Edit';
-                    callback = _RosterApp.editEntry;
+                    callback = R.editEntryHandler;
                     break;
                 case 'up':
                     classes += ' roster_up_button';
                     innerText = '▲';
-                    callback = _RosterApp.upEntry;
+                    callback = R.upEntryHandler;
                     break;
                 case 'down':
                     classes += ' roster_down_button';
                     innerText = '▼';
-                    callback = _RosterApp.downEntry;
+                    callback = R.downEntryHandler;
                     break;
             }
             
             button.type = 'button';
             button.innerText = innerText;
             button.className = classes;
-            button.setAttribute('data-roster_count', count);
+            button.dataset.rosterCount = count
             button.onclick = callback;
             
             return button;
         },
 
+        deleteEntryHandler: function(ev){
+            R.deleteEntry(ev.currentTarget);
+        },
+
+        promoteEntryHandler: function(ev){
+            R.promoteEntry(R.getCount(ev.currentTarget));
+        },
+
+        demoteEntryHandler: function(ev){
+            R.demoteEntry(R.getCount(ev.currentTarget));
+        },
+
+        saveEntryHandler: function(ev){
+            R.saveEntry(R.getCount(ev.currentTarget));
+        },
+
+        editEntryHandler: function(ev){
+            R.editEntry(R.getCount(ev.currentTarget));
+        },
+
+        upEntryHandler: function(ev){
+            R.upEntry(R.getCount(ev.currentTarget));
+        },
+
+        downEntryHandler: function(ev){
+            R.downEntry(R.getCount(ev.currentTarget));
+        },
         getEntry: function(button){
             var entry;
 
             if(typeof button === 'number'){
-                entry = document.getElementById('roster_entry_' + button);               
+                entry = R.id('roster_entry_' + button);               
             }else{
-                var entry = document.getElementById('roster_entry_' + 
-                    button.getAttribute("data-roster_count"));
+                var entry = R.id('roster_entry_' + button.dataset.rosterCount); 
             }
             
             entry.field = entry.querySelector('.roster_list_item_text_container');
@@ -113,16 +160,16 @@ RosterApp =
             return entry;
         },
 
-        upEntry: function(e){
-            var entry = _RosterApp.getEntry(e.currentTarget); 
+        upEntry: function(count){
+            var entry = R.getEntry(count); 
     
             if(entry.previousElementSibling !== null){
                 entry.parentElement.insertBefore(entry, entry.previousElementSibling);
             }
         },
 
-        downEntry: function(e){
-            var entry = _RosterApp.getEntry(e.currentTarget); 
+        downEntry: function(count){
+            var entry = R.getEntry(count); 
     
             if(entry.nextElementSibling !== null){
                 entry.parentElement.insertBefore(entry, entry.nextElementSibling.nextElementSibling);
@@ -135,7 +182,7 @@ RosterApp =
 
             button.innerText = 'Edit';
 
-            button.onclick = _RosterApp.editEntry;
+            button.onclick = R.editEntryHandler;
         },
 
         saveButton: function(button){
@@ -144,25 +191,25 @@ RosterApp =
 
             button.innerText = 'Save';
 
-            button.onclick = _RosterApp.saveEntry;
+            button.onclick = R.saveEntryHandler;
         },
 
-        deleteEntry: function(e){
-            _RosterApp.removeElement(_RosterApp.getEntry(e.currentTarget));
+        deleteEntry: function(count){
+            R.removeElement(R.getEntry(count));
         },
 
         promoteButton: function(button){
-            _RosterApp.addClasses(button, ['roster_promote_button', 'success']);
-            _RosterApp.removeClasses(button, ['roster_demote_button', 'secondary']);
+            R.addClasses(button, ['roster_promote_button', 'success']);
+            R.removeClasses(button, ['roster_demote_button', 'secondary']);
             button.innerText = 'Promote';
-            button.onclick = _RosterApp.promoteEntry;
+            button.onclick = R.promoteEntryHandler;
         },
 
         demoteButton: function(button){
-            _RosterApp.addClasses(button, ['roster_demote_button', 'secondary']);
-            _RosterApp.removeClasses(button, ['roster_promote_button', 'success']);
+            R.addClasses(button, ['roster_demote_button', 'secondary']);
+            R.removeClasses(button, ['roster_promote_button', 'success']);
             button.innerText = 'Demote';
-            button.onclick = _RosterApp.demoteEntry;
+            button.onclick = R.demoteEntryHandler;
         },
             
         removeElement: function(elem){
@@ -177,46 +224,49 @@ RosterApp =
             return chld;
         },
 
-        saveEntry: function(e){
-            var entry = _RosterApp.getEntry(e.currentTarget); 
+        saveEntry: function(count){
+            var entry = R.getEntry(count); 
 
             entry.field.onkeypress = null;
             entry.field.setAttributeNode(document.createAttribute("disabled"));
 
-            entry.field.removeAttribute('data-roster_backup_value');
+            entry.field.removeAttribute('data-roster-backup-value');
 
-            _RosterApp.editButton(e.currentTarget);
+            R.editButton(entry.querySelector('.roster_save_button'));
         },
 
         restoreEntry: function(count){
-            var entry = _RosterApp.getEntry(count); 
+            var entry = R.getEntry(count); 
 
             entry.field.onkeypress = null;
             entry.field.setAttributeNode(document.createAttribute("disabled"));
-            entry.field.value = entry.field.getAttribute('data-roster_backup_value');
-            entry.field.removeAttribute('data-roster_backup_value');
+            entry.field.value = entry.field.dataset.rosterBackupValue;
+            entry.field.removeAttribute('data-roster-backup-value');
 
             entry.field.onkeypress = null;
 
-            _RosterApp.editButton(entry.querySelector('.roster_save_button'));
+            R.editButton(entry.querySelector('.roster_save_button'));
         },
 
         getCount: function(elem){
-            return parseInt(elem.getAttribute('data-roster_count'));
+            return parseInt(elem.dataset.rosterCount);
         },
 
-        editEntry: function(e){
-            var entry = _RosterApp.getEntry(e.currentTarget); 
-            var count = _RosterApp.getCount(e.currentTarget);
+        restoreEntryHandler: function(ev){
+                
+        },
 
-            entry.field.setAttribute('data-roster_backup_value', entry.field.value);
+        editEntry: function(count){
+            var entry = R.getEntry(count); 
+
+            entry.field.dataset.rosterBackupValue = entry.field.value;
 
             entry.field.removeAttribute("disabled");
             
             entry.field.onkeydown = function(e){
                 //on escape
                 if (e.keyCode === 27){
-                    _RosterApp.restoreEntry(count);
+                    R.restoreEntry(count);
                 }
             };
 
@@ -226,50 +276,55 @@ RosterApp =
                     entry.querySelector('.roster_save_button').click();
                 }
             };
-            _RosterApp.saveButton(e.currentTarget);
+            R.saveButton(entry.querySelector('.roster_edit_button'));
                         
             entry.field.select();
         },
             
-        demoteEntry: function(e){
-            var entry = _RosterApp.getEntry(this); 
-            
-            //_RosterApp.removeElement(entry);
-            //_RosterApp.prependChild(_RosterApp.roster, entry);
-            
-            _RosterApp.promoteButton(this)
+        getButton: function(entry, name){
+            return entry.querySelector('.roster_' + name + '_button');
+        },
 
-            var textContainer = entry.querySelector('input.roster_list_item_text_container');
+        getInput: function(entry){
+            return entry.querySelector('input.roster_list_item_text_container');
+        },
 
-            textContainer.classList.remove('roster_promoted'); 
+        demoteEntry: function(count){
+            var entry = R.getEntry(count); 
+            
+            //R.removeElement(entry);
+            //R.prependChild(R.roster, entry);
+            
+            R.promoteButton(R.getButton(entry, 'demote'));
+
+            R.getInput(entry).classList.remove('roster_promoted'); 
             entry.classList.remove('roster_promoted');
         },
 
-        promoteEntry: function(e){
-            var entry = _RosterApp.getEntry(this); 
+        promoteEntry: function(count){
+            var entry = R.getEntry(count); 
 
             
-            //_RosterApp.removeElement(entry);
-            //_RosterApp.prependChild(_RosterApp.promotedRoster, entry);
+            //R.removeElement(entry);
+            //R.prependChild(R.promotedRoster, entry);
 
-            _RosterApp.demoteButton(this)
+            R.demoteButton(R.getButton(entry, 'promote'));
             
-            var textContainer = entry.querySelector('input.roster_list_item_text_container');
             entry.classList.add('roster_promoted');
-            textContainer.classList.add('roster_promoted');
+            R.getInput(entry).classList.add('roster_promoted');
         },
 
         resetHead: function(){
-            _RosterApp.inputField.value = '';
-            _RosterApp.maintainButton();
+            R.inputField.value = '';
+            R.maintainButton();
         },
 
         rosterAdd: function(e) {
             e.preventDefault();
 
-            if(!document.getElementById('roster_add_button').classList.contains('disabled')){
-                _RosterApp.addEntry(_RosterApp.inputField.value);
-                _RosterApp.resetHead();
+            if(!R.id('roster_add_button').classList.contains('disabled')){
+                R.addEntry(R.inputField.value);
+                R.resetHead();
             }
         },
         
@@ -280,16 +335,16 @@ RosterApp =
         },
 
         addClasses: function(elem, classes){
-            _RosterApp.forEachCall(elem, classes, elem.classList.add.bind(elem.classList));
+            R.forEachCall(elem, classes, elem.classList.add.bind(elem.classList));
         },
 
         removeClasses: function(elem, classes){
-            _RosterApp.forEachCall(elem, classes, elem.classList.remove.bind(elem.classList));
+            R.forEachCall(elem, classes, elem.classList.remove.bind(elem.classList));
         },
 
         maintainButton: function() {
-            var inputButton = document.getElementById('roster_add_button');
-            var isEmpty = /^\s*$/.test(_RosterApp.inputField.value);
+            var inputButton = R.id('roster_add_button');
+            var isEmpty = /^\s*$/.test(R.inputField.value);
 
             if (isEmpty){
                 inputButton.classList.add('disabled');
@@ -299,7 +354,7 @@ RosterApp =
         },
     };
 
-    return _RosterApp;
+    return R;
 })();
 
 document.onload = RosterApp.init();
