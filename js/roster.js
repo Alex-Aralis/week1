@@ -32,7 +32,7 @@ RosterApp =
             
             R.rosterObj.head = obj;
 
-            R.rosterObj.length--;
+            R.rosterObj.length++;
             R.rosterObj[obj.id] = obj;
         },
 
@@ -267,21 +267,16 @@ RosterApp =
             return obj;
         },
 
+        downEntryObj: function(obj){
+            upEntryObj(obj.next);
+        },
+
         upEntry: function(count){
             var entry = R.getEntry(count); 
             
             if(entry.previousElementSibling !== null){
-                var obj = R.rosterObj[count];
+                R.upEntryObj(R.rosterObj[count]);
                 
-                R.upEntryObj(obj);
-                
-                /*
-                var i = R.rosterObj[count].index;
-                R.rosterObj.ids[i].index -= 1;
-                R.rosterObj.ids[i-1].index += 1;
-                R.rosterObj.ids[i] = R.rosterObj.ids[i-1];
-                R.rosterObj.ids[i-1] = R.rosterObj[count];
-                */
                 entry.parentElement.insertBefore(entry, entry.previousElementSibling);
             }
         },
@@ -290,11 +285,8 @@ RosterApp =
             var entry = R.getEntry(count); 
     
             if(entry.nextElementSibling !== null){
-                var i = R.rosterObj[count].index;
-                R.rosterObj.ids[i].index += 1;
-                R.rosterObj.ids[i+1].index -= 1;
-                R.rosterObj.ids[i] = R.rosterObj.ids[i+1];
-                R.rosterObj.ids[i+1] = R.rosterObj[count];
+                R.downEntryObj(R.rosterObj[count]);
+
                 entry.parentElement.insertBefore(entry, entry.nextElementSibling.nextElementSibling);
             }
         },
