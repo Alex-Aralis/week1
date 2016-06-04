@@ -3,34 +3,59 @@ RosterApp =
 (function() {
     var R = {
         init: function() {
-            R.rosterObj = {length: 0, head: null, tail: null,};
+            try {
+                //R.rosterObj = JSON.parse(localStorage.getItem('rosterObj'));
+            }catch (e){
+                R.rosterObj = {length: 0, head: null, tail: null,};
+            }
+
             R.inputField = R.id('roster_input');
             R.roster = R.id('roster_list');
             R.promotedRoster = R.id('roster_promoted_list');
             R.addButton = R.id('roster_add_button');
             R.form = R.id('roster_head');
             R.count = 0;
-
+                
+            try{
+                R.populateRoster(R.rosterObj);
+            }catch (e){
+                console.log('load failed')
+                localStorage.removeItem('rosterObj'); 
+                R.rosterObj = {length: 0, head: null, tail: null,};
+            }
             R.inputField.onkeyup = R.addInputKeyupHandler;
-           
+            onunload = R.unloadHandler;
+
             R.form.onsubmit = R.rosterAdd; 
         },
         
         id: document.getElementById.bind(document),
 
+        populateRoster: function(rosterObj){
+            if( rosterObj.head === null ){
+                return;
+            }
+
+            var obj = R.rosterObj[rosterObj.tail];
+            do {
+                R.roster.appendChild(R.createEntry(obj));
+                obj = R.rosterObj[obj.next];
+            } while (obj);
+        },
+
         appendEntryObj: function(obj){
-            if(R.rosterObj.length === 0){
-                R.rosterObj.tail = obj;
+            if(R.rosterObj.tail === null){
+                R.rosterObj.tail = obj.id;
             }
 
             obj.next = null;
             obj.prev = R.rosterObj.head;
 
             if (R.rosterObj.head !== null){
-                R.rosterObj.head.next = obj;
+                R.rosterObj[R.rosterObj.head].next = obj.id;
             }
             
-            R.rosterObj.head = obj;
+            R.rosterObj.head = obj.id;
 
             R.rosterObj.length++;
             R.rosterObj[obj.id] = obj;
@@ -51,7 +76,10 @@ RosterApp =
 
         addEntry: function(obj){
             R.appendEntryObj(obj);
+            R.roster.appendChild(R.createEntry(obj));
+        },
 
+        createEntry: function(obj){
             var deleteButton = R.createButton('delete', obj.id);
             var promoteButton = R.createButton('promote', obj.id);
             var editButton = R.createButton('edit', obj.id);
@@ -60,7 +88,7 @@ RosterApp =
             
             var field = R.createField(obj.value, obj.id);
             
-            var entry = R.createEntry(field, obj.id, 
+            var entry = R.assembleEntry(field, obj.id, 
                 [deleteButton, editButton, promoteButton, upButton, downButton]);
             
             if(obj.promoted){
@@ -74,8 +102,6 @@ RosterApp =
             }else{
                 R.saveEntry(entry);
             }
-
-            R.roster.appendChild(entry);
 
             return entry;
         },
@@ -96,7 +122,7 @@ RosterApp =
             return field;
         },
 
-        createEntry: function(field, count, buttons){
+        assembleEntry: function(field, count, buttons){
             var entry = document.createElement('div');
 
             entry.className = 'flex_container roster_entry';
@@ -161,6 +187,13 @@ RosterApp =
             return button;
         },
 
+        unloadHandler: function(ev){
+            localStorage.setItem('rosterObj', JSON.stringify(R.rosterObj));
+        },
+
+        loadHandler: function(ev){
+        },
+
         addInputKeyupHandler: function(ev){
             R.maintainButton(R.inputField, R.addButton);
         },
@@ -214,7 +247,6 @@ RosterApp =
 
         restoreEntryKeydownHandler: function(ev){
                 var field = ev.currentTarget;
-                //R.rosterObj[R.getEntryId(field)].value = field.value;
 
                 //on escape
                 if (ev.keyCode === 27){
@@ -239,38 +271,67 @@ RosterApp =
         },
 
         upEntryObj: function(obj){
-            var pp = obj.prev.prev;
-            var prev = obj.prev;
+            
+            var pp = R.rosterObj[R.rosterObj[obj.prev].prev];
+            var prev = R.rosterObj[obj.prev];
             var cur = obj;
-            var next = obj.next;
-    
-            prev.next = next;
-            prev.prev = cur;
+            var next = R.rosterObj[obj.next];
+   
+            if( obj.id === R.rosterObj.head ) {
+                prev.next = null;
+                R.rosterObj.head = prev.id;
+            } else {
+                prev.next = next.id;
+                next.prev = prev.id;
+            }
+            
+            prev.prev = cur.id;
 
-            cur.prev = pp;
-            cur.next = prev;
+            if ( prev.id === R.rosterObj.tail ) {
+                cur.prev = null;
+                R.rosterObj.tail = cur.id;
+            }else{
+                cur.prev = pp.id;
+                pp.next = cur.id;
+            }
+
+            cur.next = prev.id;
 
             //if cur is not the bottom of the list
             if(next !== null){
-                next.prev = prev;
             }else{
-                R.rosterObj.head = prev;
             }
             
             //prev is not tail
             if(pp !== null){
-                pp.next = cur;
             }else{
-                R.rosterObj.tail = cur;
             }
 
             return obj;
         },
 
         downEntryObj: function(obj){
-            upEntryObj(obj.next);
+            R.upEntryObj(R.rosterObj[obj.next]);
         },
 
+        removeEntryObj: function(obj){
+            if (obj.id === R.rosterObj.head){
+                R.rosterObj.head = obj.prev;
+            }else{
+                R.rosterObj[obj.next].prev = obj.prev;
+            }
+
+            if (obj.id === R.rosterObj.tail){
+                R.rosterObj.tail = obj.next;
+            }else{
+                R.rosterObj[obj.prev].next = obj.next;
+            }
+
+            delete R.rosterObj[obj.id];
+
+            return obj;
+        },
+        
         upEntry: function(count){
             var entry = R.getEntry(count); 
             
@@ -321,14 +382,7 @@ RosterApp =
             var entry = R.getEntry(el);
             var count = R.getCount(entry);
 
-            var i = R.rosterObj[count].index; 
-            R.rosterObj.ids.splice(i, i+1);
-            delete R.rosterObj[count];
-
-            for (j = i; j < R.rosterObj.ids.length; j++){
-                R.rosterObj.ids[j].index--;
-            }
-
+            R.removeEntryObj(R.rosterObj[count]);
             R.removeElement(entry);
         },
 
@@ -392,6 +446,7 @@ RosterApp =
 
         restoreEntry: function(count){
             var entry = R.getEntry(count); 
+            var button = R.getButton(entry, 'save');
 
             entry.field.onkeypress = null;
             entry.field.setAttributeNode(document.createAttribute("disabled"));
@@ -402,7 +457,8 @@ RosterApp =
             entry.field.onkeydown = null;
             entry.field.onkeyup = null;
 
-            R.editButton(entry.querySelector('.roster_save_button'));
+            R.editButton(button);
+            R.maintainButton(entry.field, button);
         },
 
         getCount: function(elem){
