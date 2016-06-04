@@ -4,9 +4,9 @@ RosterApp =
     var R = {
         init: function() {
             try {
-                //R.rosterObj = JSON.parse(localStorage.getItem('rosterObj'));
+                R.rosterObj = JSON.parse(localStorage.getItem('rosterObj'));
             }catch (e){
-                R.rosterObj = {length: 0, head: null, tail: null,};
+                R.rosterObj = {length: 0, count: 0, head: null, tail: null,};
             }
 
             R.inputField = R.id('roster_input');
@@ -14,14 +14,13 @@ RosterApp =
             R.promotedRoster = R.id('roster_promoted_list');
             R.addButton = R.id('roster_add_button');
             R.form = R.id('roster_head');
-            R.count = 0;
                 
             try{
                 R.populateRoster(R.rosterObj);
             }catch (e){
                 console.log('load failed')
                 localStorage.removeItem('rosterObj'); 
-                R.rosterObj = {length: 0, head: null, tail: null,};
+                R.rosterObj = {length: 0, count: 0, head: null, tail: null,};
             }
             R.inputField.onkeyup = R.addInputKeyupHandler;
             onunload = R.unloadHandler;
@@ -65,11 +64,11 @@ RosterApp =
             e.preventDefault();
 
             if(!R.id('roster_add_button').classList.contains('disabled')){
-                R.addEntry({id: R.count, 
+                R.addEntry({id: R.rosterObj.count, 
                             value: R.inputField.value, 
                             promoted:false,
                             editing:false,});
-                R.count += 1;
+                R.rosterObj.count += 1;
                 R.resetHead();
             }
         },
