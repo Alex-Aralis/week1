@@ -166,8 +166,8 @@ RosterApp =
                     break;
                 case 'edit':
                     classes += ' roster_edit_button';
-                    innerText = 'Edit';
-                    icon = null
+                    innerText = '';
+                    R.addClasses(icon, ['fa', 'fa-pencil-square-o']);
                     callback = R.editEntryHandler;
                     break;
                 case 'up':
@@ -367,8 +367,9 @@ RosterApp =
             button.classList.add('roster_edit_button');
             button.classList.remove('roster_save_button');
 
-            button.innerText = 'Edit';
-
+            button.firstChild.classList.add('fa-pencil-square-o');
+            button.firstChild.classList.remove('fa-floppy-o');
+            
             button.onclick = R.editEntryHandler;
         },
 
@@ -380,7 +381,8 @@ RosterApp =
             button.classList.add('roster_save_button');
             button.classList.remove('roster_edit_button');
 
-            button.innerText = 'Save';
+            button.firstChild.classList.remove('fa-pencil-square-o');
+            button.firstChild.classList.add('fa-floppy-o');
 
             button.onclick = R.saveEntryClickHandler;
         },
