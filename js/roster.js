@@ -3,7 +3,7 @@ RosterApp =
 (function() {
     var R = {
         init: function() {
-            R.rosterObj = {ids:[]};
+            R.rosterObj = {length: 0, head: null, tail: null,};
             R.inputField = R.id('roster_input');
             R.roster = R.id('roster_list');
             R.promotedRoster = R.id('roster_promoted_list');
@@ -18,10 +18,22 @@ RosterApp =
         
         id: document.getElementById.bind(document),
 
-        appendEntryObj(obj){
-            obj.index = R.rosterObj.ids.length;
+        appendEntryObj: function(obj){
+            if(R.rosterObj.length === 0){
+                R.rosterObj.tail = obj;
+            }
+
+            obj.next = null;
+            obj.prev = R.rosterObj.head;
+
+            if (R.rosterObj.head !== null){
+                R.rosterObj.head.next = obj;
+            }
+            
+            R.rosterObj.head = obj;
+
+            R.rosterObj.length--;
             R.rosterObj[obj.id] = obj;
-            R.rosterObj.ids.push(obj);
         },
 
         rosterAdd: function(e) {
@@ -226,16 +238,50 @@ RosterApp =
             return entry;
         },
 
+        upEntryObj: function(obj){
+            var pp = obj.prev.prev;
+            var prev = obj.prev;
+            var cur = obj;
+            var next = obj.next;
+    
+            prev.next = next;
+            prev.prev = cur;
+
+            cur.prev = pp;
+            cur.next = prev;
+
+            //if cur is not the bottom of the list
+            if(next !== null){
+                next.prev = prev;
+            }else{
+                R.rosterObj.head = prev;
+            }
+            
+            //prev is not tail
+            if(pp !== null){
+                pp.next = cur;
+            }else{
+                R.rosterObj.tail = cur;
+            }
+
+            return obj;
+        },
+
         upEntry: function(count){
             var entry = R.getEntry(count); 
             
-            
             if(entry.previousElementSibling !== null){
+                var obj = R.rosterObj[count];
+                
+                R.upEntryObj(obj);
+                
+                /*
                 var i = R.rosterObj[count].index;
                 R.rosterObj.ids[i].index -= 1;
                 R.rosterObj.ids[i-1].index += 1;
                 R.rosterObj.ids[i] = R.rosterObj.ids[i-1];
                 R.rosterObj.ids[i-1] = R.rosterObj[count];
+                */
                 entry.parentElement.insertBefore(entry, entry.previousElementSibling);
             }
         },
@@ -279,8 +325,19 @@ RosterApp =
             button.onclick = R.saveEntryClickHandler;
         },
 
-        deleteEntry: function(count){
-            R.removeElement(R.getEntry(count));
+        deleteEntry: function(el){
+            var entry = R.getEntry(el);
+            var count = R.getCount(entry);
+
+            var i = R.rosterObj[count].index; 
+            R.rosterObj.ids.splice(i, i+1);
+            delete R.rosterObj[count];
+
+            for (j = i; j < R.rosterObj.ids.length; j++){
+                R.rosterObj.ids[j].index--;
+            }
+
+            R.removeElement(entry);
         },
 
         promoteButton: function(button){
