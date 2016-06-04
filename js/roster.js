@@ -6,7 +6,7 @@ RosterApp =
             try {
                 R.rosterObj = JSON.parse(localStorage.getItem('rosterObj'));
             }catch (e){
-                R.rosterObj = {length: 0, count: 0, head: null, tail: null,};
+                R.rosterObj = {length: 0, count: 0, addField: '', head: null, tail: null,};
             }
 
             R.inputField = R.id('roster_input');
@@ -20,7 +20,7 @@ RosterApp =
             }catch (e){
                 console.log('load failed')
                 localStorage.removeItem('rosterObj'); 
-                R.rosterObj = {length: 0, count: 0, head: null, tail: null,};
+                R.rosterObj = {length: 0, count: 0, addField: '', head: null, tail: null,};
             }
             R.inputField.onkeyup = R.addInputKeyupHandler;
             onunload = R.unloadHandler;
@@ -142,46 +142,54 @@ RosterApp =
             var button = document.createElement('a');
             var classes = 'button roster_button';
             var innerText = 'DEFAULT';
+            var icon = document.createElement('i');
             var callback;
 
             switch (rosterButtonType) {
                 case 'delete':
                     classes += ' alert roster_delete_button';
-                    innerText = 'Drop';
+                    innerText = '';
+                    R.addClasses(icon, ['fa', 'fa-times']);
                     callback = R.deleteEntryHandler;
                     break;
                 case 'promote':
-                    classes += ' success roster_promote_button';
-                    innerText = 'Promote';
+                    classes += ' secondary roster_promote_button';
+                    innerText = '';
+                    R.addClasses(icon, ['fa', 'fa-star']);
                     callback = R.promoteEntryHandler;
                     break;
                 case 'demote':
-                    classes += ' secondary roster_delete_button';
-                    innerText = 'Demote';
+                    classes += ' success roster_delete_button';
+                    innerText = '';
+                    R.addClasses(icon, ['fa', 'fa-star']);
                     callback = R.demoteEntryHandler;
                     break;
                 case 'edit':
                     classes += ' roster_edit_button';
                     innerText = 'Edit';
+                    icon = null
                     callback = R.editEntryHandler;
                     break;
                 case 'up':
                     classes += ' roster_up_button';
-                    innerText = '▲';
+                    innerText = '';
+                    R.addClasses(icon, ['fa', 'fa-arrow-up']);
                     callback = R.upEntryHandler;
                     break;
                 case 'down':
                     classes += ' roster_down_button';
-                    innerText = '▼';
+                    innerText = '';
+                    R.addClasses(icon, ['fa', 'fa-arrow-down']);
                     callback = R.downEntryHandler;
                     break;
             }
-            
+           
             button.type = 'button';
             button.innerText = innerText;
             button.className = classes;
             button.dataset.rosterCount = count;
             button.onclick = callback;
+            if(icon) button.appendChild(icon);
             
             return button;
         },
@@ -390,9 +398,12 @@ RosterApp =
                 return false;
             }
 
-            R.addClasses(button, ['roster_promote_button', 'success']);
-            R.removeClasses(button, ['roster_demote_button', 'secondary']);
-            button.innerText = 'Promote';
+            R.addClasses(button, ['roster_promote_button', 'secondary']);
+            R.removeClasses(button, ['roster_demote_button', 'success']);
+
+            button.firstChild.classList.add('fa-star-o');
+            button.firstChild.classList.remove('fa-star');
+
             button.onclick = R.promoteEntryHandler;
         },
 
@@ -401,9 +412,12 @@ RosterApp =
                 return false;
             }
 
-            R.addClasses(button, ['roster_demote_button', 'secondary']);
-            R.removeClasses(button, ['roster_promote_button', 'success']);
-            button.innerText = 'Demote';
+            R.addClasses(button, ['roster_demote_button', 'success']);
+            R.removeClasses(button, ['roster_promote_button', 'secondary']);
+
+            button.firstChild.classList.add('fa-star');
+            button.firstChild.classList.remove('fa-star-o');
+
             button.onclick = R.demoteEntryHandler;
         },
             
