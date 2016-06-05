@@ -29,6 +29,8 @@ RosterApp =
         },
         
         id: document.getElementById.bind(document),
+        
+        genElem: document.createElement.bind(document),
 
         populateRoster: function(rosterObj){
             if( rosterObj.head === null ){
@@ -138,60 +140,71 @@ RosterApp =
             return entry;
         },
 
+        clearButton(button){
+            button.className = 'button roster_button';
+
+            var children = button.children
+
+            children.forEach = [].forEach;
+            button.children.forEach(function(child){
+                button.removeChild(child);
+            });
+        },
+
+        moldDeleteButton: function(button){
+            R.clearButton(button);
+
+            R.appendIcon(button, 'times');
+            R.addClasses(button, ['alert', 'roster_delete_button']);
+
+            button.onclick = R.deleteEntryHandler;
+        },
+
         createButton: function(rosterButtonType, count){
             var button = document.createElement('a');
-            var classes = 'button roster_button';
-            var innerText = 'DEFAULT';
-            var icon = document.createElement('i');
-            var callback;
+            button.type = 'button';
+            button.dataset.rosterCount = count;
 
             switch (rosterButtonType) {
                 case 'delete':
-                    classes += ' alert roster_delete_button';
-                    innerText = '';
-                    R.addClasses(icon, ['fa', 'fa-times']);
-                    callback = R.deleteEntryHandler;
+                    R.moldDeleteButton(button);
                     break;
                 case 'promote':
-                    classes += ' secondary roster_promote_button';
-                    innerText = '';
-                    R.addClasses(icon, ['fa', 'fa-star']);
-                    callback = R.promoteEntryHandler;
+                    R.promoteButton(button);
                     break;
                 case 'demote':
-                    classes += ' success roster_delete_button';
-                    innerText = '';
-                    R.addClasses(icon, ['fa', 'fa-star']);
-                    callback = R.demoteEntryHandler;
+                    R.demoteButton(button);
                     break;
                 case 'edit':
-                    classes += ' roster_edit_button';
-                    innerText = '';
-                    R.addClasses(icon, ['fa', 'fa-pencil-square-o']);
-                    callback = R.editEntryHandler;
+                    R.editButton(button);
                     break;
                 case 'up':
-                    classes += ' roster_up_button';
-                    innerText = '';
-                    R.addClasses(icon, ['fa', 'fa-arrow-up']);
-                    callback = R.upEntryHandler;
+                    R.upButton(button);
                     break;
                 case 'down':
-                    classes += ' roster_down_button';
-                    innerText = '';
-                    R.addClasses(icon, ['fa', 'fa-arrow-down']);
-                    callback = R.downEntryHandler;
+                    R.downButton(button);
                     break;
             }
            
-            button.type = 'button';
-            button.innerText = innerText;
-            button.className = classes;
-            button.dataset.rosterCount = count;
-            button.onclick = callback;
-            if(icon) button.appendChild(icon);
-            
             return button;
+        },
+
+        upButton: function(button){
+            R.clearButton(button);
+            R.appendIcon(button, 'arrow-up');
+        
+            button.classList.add('roster_up_button');
+
+            button.onclick = R.upEntryHandler;
+        },
+
+        downButton(button){
+            R.clearButton(button);
+            R.appendIcon(button, 'arrow-down');
+       
+            button.classList.add('roster_down_button');
+             
+            button.onclick = R.downEntryHandler;
         },
 
         unloadHandler: function(ev){
@@ -360,29 +373,31 @@ RosterApp =
         },
 
         editButton: function(button){
+            /*
             if( button === null ){
                 return false;
             }
+            */
 
+            R.clearButton(button);
+            R.appendIcon(button, 'pencil-square-o');
+            
             button.classList.add('roster_edit_button');
-            button.classList.remove('roster_save_button');
-
-            button.firstChild.classList.add('fa-pencil-square-o');
-            button.firstChild.classList.remove('fa-floppy-o');
             
             button.onclick = R.editEntryHandler;
         },
 
         saveButton: function(button){
+            /*
             if( button === null ){
                 return false;
             }
+            */
+
+            R.clearButton(button);
+            R.appendIcon(button, 'floppy-o');
 
             button.classList.add('roster_save_button');
-            button.classList.remove('roster_edit_button');
-
-            button.firstChild.classList.remove('fa-pencil-square-o');
-            button.firstChild.classList.add('fa-floppy-o');
 
             button.onclick = R.saveEntryClickHandler;
         },
@@ -395,16 +410,25 @@ RosterApp =
             R.removeElement(entry);
         },
 
+        appendIcon: function(button, iconString){
+            var icon = R.addClasses(R.genElem('i'), ['fa', 'fa-' + iconString]);
+
+            button.appendChild(icon);
+
+            return icon;
+        },
+
         promoteButton: function(button){
+            R.clearButton(button);
+            R.appendIcon(button, 'star-o');
+
+            /* 
             if( button === null ){
                 return false;
             }
+            */
 
             R.addClasses(button, ['roster_promote_button', 'secondary']);
-            R.removeClasses(button, ['roster_demote_button', 'success']);
-
-            button.firstChild.classList.add('fa-star-o');
-            button.firstChild.classList.remove('fa-star');
 
             button.onclick = R.promoteEntryHandler;
         },
@@ -414,11 +438,10 @@ RosterApp =
                 return false;
             }
 
-            R.addClasses(button, ['roster_demote_button', 'success']);
-            R.removeClasses(button, ['roster_promote_button', 'secondary']);
+            R.clearButton(button);
+            R.appendIcon(button, 'star');
 
-            button.firstChild.classList.add('fa-star');
-            button.firstChild.classList.remove('fa-star-o');
+            R.addClasses(button, ['roster_demote_button', 'success']);
 
             button.onclick = R.demoteEntryHandler;
         },
@@ -553,6 +576,8 @@ RosterApp =
 
         addClasses: function(elem, classes){
             R.forEachCall(elem, classes, elem.classList.add.bind(elem.classList));
+
+            return elem;
         },
 
         removeClasses: function(elem, classes){
