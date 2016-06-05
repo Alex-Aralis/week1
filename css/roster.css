@@ -46,7 +46,6 @@ div.roster_main{
 }
 
 .roster_button{
-    flex: 0 0 4rem;
     margin:0;
     -webkit-user-select: none;
 }
@@ -68,15 +67,7 @@ div.roster_entry{
     transition-duration: 0.15s;
 }
 
-a.roster_delete_button{
-}
-
-a.roster_promote_button{
-    flex:0 0 7em;
-}
-
-a.roster_demote_button{
-    flex:0 0 7em;
+a.roster_promote_button, a.roster_demote_button{
 }
 
 a.roster_save_button{
@@ -92,15 +83,14 @@ a.roster_edit_button{
 }
 
 a.roster_edit_button, a.roster_save_button{
-    flex: 0 0 5em;
 }
 
 a.roster_edit_button:hover{
     background-color:purple;
 }
 
-a.roster_up_button, a.roster_down_button{
-    flex:0 0 1rem;
+
+a.roster_up_button, a.roster_down_button, a.roster_delete_button{
     padding: 0.85em 0.2em;
 }
 
@@ -131,4 +121,8 @@ div.roster_list div.roster_entry:first-child a.roster_up_button,
 div.roster_list div.roster_entry:last-child a.roster_down_button {
     background:grey;
     cursor:default;
+}
+
+a.roster_button{
+    flex: 0 0 2.1em
 }

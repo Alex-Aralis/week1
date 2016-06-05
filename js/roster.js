@@ -17,6 +17,7 @@ R =
                 
             try{
                 R.populateRoster(R.rosterObj);
+                R.restoreInputField();
             }catch (e){
                 console.log('load failed')
                 localStorage.removeItem('rosterObj'); 
@@ -31,6 +32,11 @@ R =
         id: document.getElementById.bind(document),
         
         genElem: document.createElement.bind(document),
+
+        restoreInputField: function(){
+            R.inputField.value = R.rosterObj.addField;
+            R.maintainButton(R.inputField, R.addButton);
+        },
 
         populateRoster: function(rosterObj){
             if( rosterObj.head === null ){
@@ -68,6 +74,7 @@ R =
             if(!R.id('roster_add_button').classList.contains('disabled')){
                 R.addEntry({id: R.rosterObj.count, 
                             value: R.inputField.value, 
+                            restoreValue: null,
                             promoted:false,
                             editing:false,});
                 R.rosterObj.count += 1;
@@ -100,9 +107,11 @@ R =
 
             if(obj.editing){
                 R.editEntry(entry);
+                R.maintainButton(field, editButton);
             }else{
                 R.saveEntry(entry);
             }
+
 
             return entry;
         },
@@ -197,6 +206,7 @@ R =
         },
 
         addInputKeyupHandler: function(ev){
+            R.rosterObj.addField = ev.currentTarget.value;
             R.maintainButton(R.inputField, R.addButton);
         },
 
@@ -266,7 +276,7 @@ R =
         
         getEntry: function(button){
             var entry;
-
+            
             if(button.classList !== undefined && button.classList.contains('roster_entry')){
                 entry = button;
             }else if (button.dataset !== undefined && button.dataset.rosterCount !== undefined){
