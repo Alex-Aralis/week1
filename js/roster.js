@@ -217,7 +217,11 @@ R =
         },
 
         saveEntryClickHandler: function(ev){
-            R.saveEntry(R.getCount(ev.currentTarget));
+            var entry = R.getEntry(ev.currentTarget)
+
+            if(R.hasContent(entry.field)){
+                R.saveEntry(R.getCount(ev.currentTarget));
+            }
         },
 
         entryFieldKeyupHandler: function(ev){
@@ -230,15 +234,19 @@ R =
         saveEntryKeypressHandler: function(ev){
             var field = ev.currentTarget;
 
-            if(ev.keyCode === 13){
+            if(ev.keyCode === 13 && R.hasContent(field)){
                 R.saveEntry(R.getCount(field));
             }
         },
 
         editEntryHandler: function(ev){
+            var entry = R.getEntry(ev.currentTarget);
+            var obj = R.rosterObj[R.getEntryId(entry)];
+
+            obj.restoreValue = entry.field.value;
             R.editEntry(R.getCount(ev.currentTarget));
         },
-
+        
         upEntryHandler: function(ev){
             R.upEntry(R.getCount(ev.currentTarget));
         },
@@ -246,7 +254,7 @@ R =
         downEntryHandler: function(ev){
             R.downEntry(R.getCount(ev.currentTarget));
         },
-
+        
         restoreEntryKeydownHandler: function(ev){
             var field = ev.currentTarget;
 
@@ -255,7 +263,7 @@ R =
                 R.restoreEntry(R.getCount(field));
             }
         },
-
+        
         getEntry: function(button){
             var entry;
 
@@ -268,10 +276,10 @@ R =
             }
             
             entry.field = entry.querySelector('.roster_list_item_text_container');
-
+        
             return entry;
         },
-
+        
         upEntryObj: function(obj){
             var pp = R.rosterObj[R.rosterObj[obj.prev].prev];
             var prev = R.rosterObj[obj.prev];
@@ -446,21 +454,18 @@ R =
         saveEntry: function(count){
             var entry = R.getEntry(count); 
             var obj = R.rosterObj[R.getEntryId(entry)];
-            
-            if(R.hasContent(entry.field)){
-                obj.editing = false;
-                obj.value = entry.field.value;
 
-                entry.field.onkeypress = null;
-                entry.field.onkeydown = null;
-                entry.field.onkeyup = null;
+            obj.editing = false;
+            obj.value = entry.field.value;
+            obj.restoreValue = null;
 
-                entry.field.setAttributeNode(document.createAttribute("disabled"));
+            entry.field.onkeypress = null;
+            entry.field.onkeydown = null;
+            entry.field.onkeyup = null;
 
-                obj.restoreValue = null;
+            entry.field.setAttributeNode(document.createAttribute("disabled"));
 
-                R.editButton(R.getButton(entry, 'save') || R.getButton(entry, 'edit'));
-            }
+            R.editButton(R.getButton(entry, 'save') || R.getButton(entry, 'edit'));
         },
 
         restoreEntry: function(count){
@@ -494,7 +499,7 @@ R =
      
             obj.editing = true;
             
-            obj.restoreValue = entry.field.value;
+            //obj.restoreValue = entry.field.value;
             
             entry.field.removeAttribute("disabled");
             
