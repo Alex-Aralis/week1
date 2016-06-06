@@ -78,7 +78,7 @@ R =
             e.preventDefault();
 
             if(!R.id('roster_add_button').classList.contains('disabled')){
-                R.addEntry({
+                R.addNewEntry({
                     id: R.rosterObj.count, 
                     value: R.inputField.value, 
                     restoreValue: null,
@@ -86,9 +86,13 @@ R =
                     editing:false,
                 });
 
-                R.rosterObj.count += 1;
                 R.resetHead();
             }
+        },
+
+        addNewEntry: function(obj){
+            R.addEntry(obj);
+            R.rosterObj.count++;
         },
 
         addEntry: function(obj){
@@ -171,7 +175,6 @@ R =
             field.type = 'text';
 
             field.value = input;
-            //field.dataset.rosterCount = count;
             field.rosterCount = count;
 
             field.onclick = R.entryFieldClickHandler;
@@ -182,7 +185,7 @@ R =
         assembleEntry: function(entry, field, buttons){
             var buttonContainer = R.genElem('div');
            
-            R.addClasses(buttonContainer, ['spectal', 'flex_container']); 
+            R.addClasses(buttonContainer, ['spectal', 'roster_button_container', 'flex_container']); 
             buttonContainer.classList.add('spectral');
 
             entry.className = 'flex_container roster_entry';
@@ -386,14 +389,21 @@ R =
             R.upEntryObj(R.rosterObj[obj.next]);
         },
 
-        insertAfterEntryObj: function(obj){
-            if (obj === null){
-                //insert at head
-                R.rosterObj.head = obj;
-                
-            }
-        },
+/*
+        insertAfterEntryObj: function(prev, o){
+            if (prev === null){
+                //insert as head
+                R.rosterObj.head = o;
+                R.rosterObj.tail = o;
 
+                
+                
+            }else{
+                //insert after obj
+                ob
+                
+        },
+*/
         removeEntryObj: function(obj){
             if (obj.id === R.rosterObj.head){
                 R.rosterObj.head = obj.prev;
@@ -515,7 +525,6 @@ R =
 
         saveEntry: function(count){
             var entry = R.rosterEntryElems[count];
-            //var entry = R.getEntry(count); 
             var obj = entry.entryObj;
 
             obj.editing = false;
@@ -533,11 +542,8 @@ R =
 
         restoreEntry: function(count){
             var entry = R.rosterEntryElems[count];
-            //var entry = R.getEntry(count); 
             var button = entry.buttons['edit'];
-            //var button = R.getButton(entry, 'save');
             var obj = entry.entryObj;
-            //var obj = R.rosterObj[R.getEntryId(entry)];
             
             entry.field.onkeypress = null;
             entry.field.setAttributeNode(document.createAttribute("disabled"));
@@ -558,19 +564,14 @@ R =
 
         getCount: function(elem){
             return R.getEntry(elem).entryObj.id;
-            //return parseInt(elem.dataset.rosterCount);
         },
 
 
         editEntry: function(count){
             var entry = R.rosterEntryElems[count];
-            //var entry = R.getEntry(count); 
             var obj = entry.entryObj;
-            //var obj = R.rosterObj[R.getEntryId(entry)];
      
             obj.editing = true;
-            
-            //obj.restoreValue = entry.field.value;
             
             entry.field.removeAttribute("disabled");
             
@@ -583,59 +584,26 @@ R =
             entry.field.select();
         },
             
-
-        /*
-        getButton: function(entry, name){
-            return entry.querySelector('.roster_' + name + '_button');
-        },
-        */
-
-        /*
-        getInput: function(entry){
-            return entry.querySelector('input.roster_list_item_text_container');
-        },
-        */
-
-        /*
-        getEntryId(entry){
-            return Number(entry.dataset.rosterCount);
-        },
-        */
-
         demoteEntry: function(count){
             var entry = R.rosterEntryElems[count];
-            //var entry = R.getEntry(count); 
-            //var obj = R.rosterObj[R.getEntryId(entry)];
             var obj = entry.entryObj;
 
             obj.promoted = false;
 
-            //R.removeElement(entry);
-            //R.prependChild(R.roster, entry);
-           
             R.moldRosterButton(entry.buttons['promote'], 'promote');
              
-            //R.promoteButton(R.getButton(entry, 'demote') || R.getButton(entry, 'promote'));
-
-            //R.getInput(entry).classList.remove('roster_promoted'); 
             entry.field.classList.remove('roster_promoted');
             entry.classList.remove('roster_promoted');
         },
 
         promoteEntry: function(count){
             var entry = R.rosterEntryElems[count];
-            //var entry = R.getEntry(count); 
-            //var obj = R.rosterObj[R.getEntryId(entry)];
             var obj = entry.entryObj;
 
             obj.promoted = true;
             
-            //R.removeElement(entry);
-            //R.prependChild(R.promotedRoster, entry);
-
             R.moldRosterButton(entry.buttons['promote'], 'demote');
-            //R.demoteButton(R.getButton(entry, 'promote') || R.getButton(enty, 'demote'));
-            
+
             entry.classList.add('roster_promoted');
             entry.field.classList.add('roster_promoted');
         },
@@ -668,6 +636,27 @@ R =
             }else{
                 button.classList.add('disabled');
             }
+        },
+
+        loadMutants: function(){
+            $.ajax({
+                url: "https://mutant-school.herokuapp.com/api/v1/mutants",
+                type: "GET",
+            }).done(function(mutants){
+                var obj;
+                $.each(mutants, function(id, m){
+                    obj = {
+                        id: R.rosterObj.count, 
+                        value: m.mutant_name + ' (' + m.real_name + ')' + ': ' + m.power , 
+                        restoreValue: null,
+                        promoted:false,
+                        editing:false,
+                    };
+
+                    R.addNewEntry(obj);
+                    
+                });
+            });
         },
     };
 

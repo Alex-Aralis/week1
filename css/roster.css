@@ -124,7 +124,11 @@ div.roster_list div.roster_entry:last-child a.roster_down_button {
 }
 
 a.roster_button{
-    flex: 0 0 2.1em
+    height:100%;
+}
+
+i{
+    height:100%;
 }
 
 .spectral{
@@ -133,6 +137,24 @@ a.roster_button{
     transition-duration:0.3s;
 }
 
+.roster_entry:hover .spectal{
+    opacity:1;
+}
+
+.roster_entry{
+    display:block;
+}
+
+/*
 .spectal:hover{
     opacity: 1;
+}
+*/
+
+.roster_button_container{
+    display:inline-block;
+    position:absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
 }
