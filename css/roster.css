@@ -62,7 +62,7 @@ div.roster_entry{
     position:relative;
     left:0;
     top:0;
-    margin:0 0 0.5rem 0;
+    margin:0.5rem 0 0 0;
     transition-property: left, top, box-shadow;
     transition-duration: 0.15s;
 }
