@@ -126,3 +126,13 @@ div.roster_list div.roster_entry:last-child a.roster_down_button {
 a.roster_button{
     flex: 0 0 2.1em
 }
+
+.spectral{
+    opacity:0;
+    transition-property:opacity;
+    transition-duration:0.3s;
+}
+
+.spectal:hover{
+    opacity: 1;
+}

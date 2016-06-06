@@ -180,14 +180,21 @@ R =
         },
 
         assembleEntry: function(entry, field, buttons){
+            var buttonContainer = R.genElem('div');
+           
+            R.addClasses(buttonContainer, ['spectal', 'flex_container']); 
+            buttonContainer.classList.add('spectral');
+
             entry.className = 'flex_container roster_entry';
             
             entry.appendChild(field);
 
             buttons.forEach(function(button){
-                entry.appendChild(button);                
+                buttonContainer.appendChild(button);                
                 entry.buttons[button.rosterButtonName] = button;
             });
+
+            entry.appendChild(buttonContainer);
 
             return entry;
         },
@@ -535,6 +542,7 @@ R =
             entry.field.onkeypress = null;
             entry.field.setAttributeNode(document.createAttribute("disabled"));
             entry.field.value = obj.restoreValue;
+            obj.value = obj.restoreValue;
             obj.restoreValue = null;
                 
             entry.field.onkeypress = null;
